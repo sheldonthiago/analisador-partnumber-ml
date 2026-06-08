@@ -208,58 +208,46 @@ function showError(msg) {
 function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
 
 async function callGroq(pn, desc) {
-
-
   var descLine = desc
     ? "Descricao confirmada pelo usuario: " + desc
     : "ATENCAO: sem descricao informada. Identifique a peca apenas pelo Part Number.";
 
-  var prompt = "Voce e um especialista em pecas de motocicletas e Mercado Livre Brasil.
-" +
-    "Part Number: " + pn + "
-" +
-    descLine + "
+  var systemMsg = "Voce e um especialista em pecas de motocicletas. Responda APENAS com JSON valido, sem markdown, sem texto adicional.";
 
-" +
-    "Retorne APENAS JSON valido sem markdown:
-" +
-    '{"titulo":"[min 60 chars: marca + ' + pn + ' + modelos + diferencial]",' +
-    '"dimensoes":{"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},' +
-    '"part_numbers_compativeis":[{"codigo":"string","tipo":"original","marca":"string"}],' +
-    '"disclaimer":"string"}' + "
-
-" +
-    "Regras:
-" +
-    "- titulo deve ter minimo 60 caracteres e conter o Part Number " + pn + "
-" +
-    "- tipo: apenas original ou aftermarket
-" +
-    "- Gere entre 5 e 8 part_numbers_compativeis incluindo originais e aftermarket
-" +
-    "- Retorne SOMENTE o JSON, sem nenhum texto antes ou depois";
+  var userMsg = [
+    "Voce e um especialista em pecas de motocicletas e Mercado Livre Brasil.",
+    "Part Number: " + pn,
+    descLine,
+    "",
+    "Retorne APENAS JSON valido sem markdown:",
+    '{"titulo":"[min 60 chars: marca + ' + pn + ' + modelos + diferencial]","dimensoes":{"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},"part_numbers_compativeis":[{"codigo":"string","tipo":"original","marca":"string"}],"disclaimer":"string"}',
+    "",
+    "Regras:",
+    "- titulo deve ter minimo 60 caracteres e conter o Part Number " + pn,
+    "- tipo: apenas original ou aftermarket",
+    "- Gere entre 5 e 8 part_numbers_compativeis incluindo originais e aftermarket",
+    "- Retorne SOMENTE o JSON, sem nenhum texto antes ou depois"
+  ].join("\n");
 
   var res = await fetch(GROQ_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: "llama-3.3-70b-versatile",
       temperature: 0.2,
       max_tokens: 1500,
       messages: [
-        { role: 'system', content: 'Voce e um especialista em pecas de motocicletas. Responda APENAS com JSON valido, sem markdown, sem texto adicional.' },
-        { role: 'user', content: prompt }
+        { role: "system", content: systemMsg },
+        { role: "user", content: userMsg }
       ],
-      response_format: { type: 'json_object' }
+      response_format: { type: "json_object" }
     })
   });
 
   var data = await res.json();
-  if (!res.ok) throw new Error(data.error ? data.error.message : 'Erro Groq');
+  if (!res.ok) throw new Error(data.error ? data.error.message : "Erro Groq");
   var raw = data.choices[0].message.content;
-  var clean = raw.replace(/```json|```/g, '').trim();
+  var clean = raw.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
 }
 
