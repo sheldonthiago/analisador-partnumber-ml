@@ -84,7 +84,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Part Numbers</div>
-  <div class="header-sub">Sucatão do Major · v2.2</div>
+  <div class="header-sub">Sucatão do Major · v2.3</div>
 </div>
 
 <div class="config-panel" id="configPanel" style="display:none;">
@@ -173,7 +173,7 @@
 </div>
 
 <script>
-var GROQ_KEY = localStorage.getItem("groq_key") || "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";
+var GROQ_KEY = localStorage.getItem("groq_key") || (window.__ENV__ && window.__ENV__.GROQ_KEY) || "";
 
 function saveKey() {
   var k = document.getElementById('groqKeyInput').value.trim();
@@ -190,8 +190,8 @@ window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('configOk').textContent = '✓ Chave configurada';
   document.getElementById('configOk').style.display = 'block';
 });
-var GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-var ML_URL = "https://corsproxy.io/?url=https://api.mercadolibre.com/sites/MLB/search";
+var GROQ_URL = "/api/groq";
+var ML_URL = "/api/ml";
 
 function setStep(id, state, text) {
   var el = document.getElementById(id);
@@ -208,8 +208,7 @@ function showError(msg) {
 function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
 
 async function callGroq(pn, desc) {
-  GROQ_KEY = localStorage.getItem("groq_key") || GROQ_KEY;
-  if (!GROQ_KEY) throw new Error("Configure a Groq API Key no painel acima");
+
 
   var descLine = desc
     ? "Descricao confirmada pelo usuario: " + desc
@@ -243,8 +242,7 @@ async function callGroq(pn, desc) {
   var res = await fetch(GROQ_URL, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + GROQ_KEY
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
