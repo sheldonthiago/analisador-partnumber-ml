@@ -263,11 +263,21 @@ async function callGroq(pn, desc) {
   return JSON.parse(clean);
 }
 
-async function callML(query) {
-  var res = await fetch(ML_URL + "?q=" + encodeURIComponent(query) + "&limit=10&site_id=MLB");
+async function callML(query, fallback) {
+  var url = ML_URL + "?q=" + encodeURIComponent(query) + "&limit=10&site_id=MLB";
+  var res = await fetch(url);
   if (!res.ok) throw new Error('Erro ML API: ' + res.status);
   var data = await res.json();
-  return data.results || [];
+  var results = data.results || [];
+  // If no results and we have a fallback query, try with fallback
+  if (results.length === 0 && fallback && fallback !== query) {
+    var res2 = await fetch(ML_URL + "?q=" + encodeURIComponent(fallback) + "&limit=10&site_id=MLB");
+    if (res2.ok) {
+      var data2 = await res2.json();
+      results = data2.results || [];
+    }
+  }
+  return results;
 }
 
 async function runAnalysis() {
@@ -295,7 +305,8 @@ async function runAnalysis() {
       setStep('stepGemini', 'error', 'Groq — erro: ' + e.message);
     });
 
-  var mlPromise = callML(pn)
+  var mlQuery = desc ? desc : pn;
+  var mlPromise = callML(mlQuery, pn)
     .then(function(r) {
       mlResults = r;
       setStep('stepML', 'done', 'Mercado Livre — ' + r.length + ' anúncio(s) encontrado(s)');
