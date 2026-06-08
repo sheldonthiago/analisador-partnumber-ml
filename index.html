@@ -84,13 +84,13 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Part Numbers</div>
-  <div class="header-sub">Sucatão do Major · v2.0</div>
+  <div class="header-sub">Sucatão do Major · v2.1</div>
 </div>
 
 <div class="config-panel" id="configPanel">
-  <div class="config-title">⚙ Configuração — Gemini API Key</div>
+  <div class="config-title">⚙ Configuração — Groq API Key</div>
   <div class="config-row">
-    <input class="config-input" id="geminiKeyInput" type="password" placeholder="Cole sua Gemini API Key aqui..." autocomplete="off" />
+    <input class="config-input" id="groqKeyInput" type="password" placeholder="Cole sua Groq API Key aqui (gsk_...)" autocomplete="off" />
     <button class="config-save" onclick="saveKey()">Salvar</button>
   </div>
   <div class="config-ok" id="configOk">✓ Chave salva no navegador</div>
@@ -108,7 +108,7 @@
 
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-steps">
-    <div class="step" id="stepGemini"><span class="step-icon">🤖</span> Aguardando Gemini...</div>
+    <div class="step" id="stepGemini"><span class="step-icon">🤖</span> Aguardando Groq...</div>
     <div class="step" id="stepML"><span class="step-icon">🛒</span> Aguardando Mercado Livre...</div>
   </div>
 </div>
@@ -173,13 +173,13 @@
 </div>
 
 <script>
-var GEMINI_KEY = localStorage.getItem("gemini_key") || "";
+var GROQ_KEY = localStorage.getItem("groq_key") || "";
 
 function saveKey() {
-  var k = document.getElementById('geminiKeyInput').value.trim();
+  var k = document.getElementById('groqKeyInput').value.trim();
   if (!k) return;
-  localStorage.setItem('gemini_key', k);
-  GEMINI_KEY = k;
+  localStorage.setItem('groq_key', k); GROQ_KEY = k;
+  
   document.getElementById('configOk').style.display = 'block';
   document.getElementById('geminiKeyInput').value = '';
   setTimeout(function() { document.getElementById('configOk').style.display = 'none'; }, 2000);
@@ -187,12 +187,12 @@ function saveKey() {
 
 // Show saved state on load
 window.addEventListener('DOMContentLoaded', function() {
-  if (GEMINI_KEY) {
+  if (GROQ_KEY) {
     document.getElementById('configOk').textContent = '✓ Chave configurada';
     document.getElementById('configOk').style.display = 'block';
   }
 });
-var GEMINI_URL = "";
+var GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 var ML_URL = "https://corsproxy.io/?url=https://api.mercadolibre.com/sites/MLB/search";
 
 function setStep(id, state, text) {
@@ -209,46 +209,60 @@ function showError(msg) {
 }
 function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
 
-async function callGemini(pn, desc) {
-  GEMINI_KEY = localStorage.getItem("gemini_key") || GEMINI_KEY;
-  if (!GEMINI_KEY) throw new Error("Configure a Gemini API Key no painel acima");
-  var isOAuth = GEMINI_KEY.startsWith("AQ.") || GEMINI_KEY.startsWith("ya29.");
-  var url = isOAuth
-    ? "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-    : "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY;
-  GEMINI_URL = url;
+async function callGroq(pn, desc) {
+  GROQ_KEY = localStorage.getItem("groq_key") || GROQ_KEY;
+  if (!GROQ_KEY) throw new Error("Configure a Groq API Key no painel acima");
+
   var descLine = desc
     ? "Descricao confirmada pelo usuario: " + desc
     : "ATENCAO: sem descricao informada. Identifique a peca apenas pelo Part Number.";
 
-  var prompt = "Voce e um especialista em pecas de motocicletas e Mercado Livre Brasil.\n" +
-    "Part Number: " + pn + "\n" +
-    descLine + "\n\n" +
-    "Retorne APENAS JSON valido sem markdown:\n" +
+  var prompt = "Voce e um especialista em pecas de motocicletas e Mercado Livre Brasil.
+" +
+    "Part Number: " + pn + "
+" +
+    descLine + "
+
+" +
+    "Retorne APENAS JSON valido sem markdown:
+" +
     '{"titulo":"[min 60 chars: marca + ' + pn + ' + modelos + diferencial]",' +
     '"dimensoes":{"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},' +
     '"part_numbers_compativeis":[{"codigo":"string","tipo":"original","marca":"string"}],' +
-    '"disclaimer":"string"}' + "\n\n" +
-    "Regras:\n" +
-    "- titulo deve ter minimo 60 caracteres e conter o Part Number " + pn + "\n" +
-    "- tipo: apenas original ou aftermarket\n" +
-    "- Gere entre 5 e 8 part_numbers_compativeis incluindo originais e aftermarket\n" +
+    '"disclaimer":"string"}' + "
+
+" +
+    "Regras:
+" +
+    "- titulo deve ter minimo 60 caracteres e conter o Part Number " + pn + "
+" +
+    "- tipo: apenas original ou aftermarket
+" +
+    "- Gere entre 5 e 8 part_numbers_compativeis incluindo originais e aftermarket
+" +
     "- Retorne SOMENTE o JSON, sem nenhum texto antes ou depois";
 
-  var headers = { 'Content-Type': 'application/json' };
-  if (isOAuth) headers['Authorization'] = 'Bearer ' + GEMINI_KEY;
-  var res = await fetch(GEMINI_URL, {
+  var res = await fetch(GROQ_URL, {
     method: 'POST',
-    headers: headers,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + GROQ_KEY
+    },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.2, maxOutputTokens: 1500 }
+      model: 'llama-3.3-70b-versatile',
+      temperature: 0.2,
+      max_tokens: 1500,
+      messages: [
+        { role: 'system', content: 'Voce e um especialista em pecas de motocicletas. Responda APENAS com JSON valido, sem markdown, sem texto adicional.' },
+        { role: 'user', content: prompt }
+      ],
+      response_format: { type: 'json_object' }
     })
   });
 
   var data = await res.json();
-  if (!res.ok) throw new Error(data.error ? data.error.message : 'Erro Gemini');
-  var raw = data.candidates[0].content.parts[0].text;
+  if (!res.ok) throw new Error(data.error ? data.error.message : 'Erro Groq');
+  var raw = data.choices[0].message.content;
   var clean = raw.replace(/```json|```/g, '').trim();
   return JSON.parse(clean);
 }
@@ -270,19 +284,19 @@ async function runAnalysis() {
   document.getElementById('analyzeBtn').disabled = true;
   document.getElementById('progressWrap').style.display = 'block';
 
-  setStep('stepGemini', 'running', 'Analisando peça com Gemini Flash...');
+  setStep('stepGemini', 'running', 'Analisando peça com Groq (Llama 3.3)...');
   setStep('stepML', 'running', 'Buscando anúncios no Mercado Livre...');
 
   var geminiResult = null, mlResults = null, geminiErr = null, mlErr = null;
 
-  var geminiPromise = callGemini(pn, desc)
+  var geminiPromise = callGroq(pn, desc)
     .then(function(r) {
       geminiResult = r;
-      setStep('stepGemini', 'done', 'Gemini Flash — análise concluída');
+      setStep('stepGemini', 'done', 'Groq (Llama 3.3) — análise concluída');
     })
     .catch(function(e) {
       geminiErr = e.message;
-      setStep('stepGemini', 'error', 'Gemini — erro: ' + e.message);
+      setStep('stepGemini', 'error', 'Groq — erro: ' + e.message);
     });
 
   var mlPromise = callML(pn)
