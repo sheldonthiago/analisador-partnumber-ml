@@ -212,7 +212,11 @@ function hideError() { document.getElementById('errorMsg').style.display = 'none
 async function callGemini(pn, desc) {
   GEMINI_KEY = localStorage.getItem("gemini_key") || GEMINI_KEY;
   if (!GEMINI_KEY) throw new Error("Configure a Gemini API Key no painel acima");
-  GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY;
+  var isOAuth = GEMINI_KEY.startsWith("AQ.") || GEMINI_KEY.startsWith("ya29.");
+  var url = isOAuth
+    ? "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    : "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY;
+  GEMINI_URL = url;
   var descLine = desc
     ? "Descricao confirmada pelo usuario: " + desc
     : "ATENCAO: sem descricao informada. Identifique a peca apenas pelo Part Number.";
@@ -231,9 +235,11 @@ async function callGemini(pn, desc) {
     "- Gere entre 5 e 8 part_numbers_compativeis incluindo originais e aftermarket\n" +
     "- Retorne SOMENTE o JSON, sem nenhum texto antes ou depois";
 
+  var headers = { 'Content-Type': 'application/json' };
+  if (isOAuth) headers['Authorization'] = 'Bearer ' + GEMINI_KEY;
   var res = await fetch(GEMINI_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: headers,
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { temperature: 0.2, maxOutputTokens: 1500 }
