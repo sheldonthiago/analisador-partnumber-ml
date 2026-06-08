@@ -84,7 +84,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Part Numbers</div>
-  <div class="header-sub">Sucatão do Major · v2.3</div>
+  <div class="header-sub">Sucatão do Major · v2.5</div>
 </div>
 
 <div class="config-panel" id="configPanel" style="display:none;">
@@ -208,33 +208,41 @@ function showError(msg) {
 function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
 
 async function callGroq(pn, desc) {
-  var descLine = desc
-    ? "Descricao confirmada pelo usuario: " + desc
-    : "ATENCAO: sem descricao informada. Identifique a peca apenas pelo Part Number.";
+  var systemMsg = "Voce e um especialista em pecas de motocicletas para o marketplace Mercado Livre Brasil. " +
+    "Sua unica tarefa e retornar um JSON valido e completo com base nas informacoes fornecidas. " +
+    "NUNCA invente informacoes. Use EXATAMENTE o Part Number e a descricao fornecidos. " +
+    "Responda SOMENTE com JSON, sem markdown, sem explicacoes, sem texto fora do JSON.";
 
-  var systemMsg = "Voce e um especialista em pecas de motocicletas. Responda APENAS com JSON valido, sem markdown, sem texto adicional.";
+  var userLines = [];
+  userLines.push("DADOS DA PECA (use exatamente essas informacoes, nao substitua por outra peca):");
+  userLines.push("Part Number: " + pn);
+  if (desc) {
+    userLines.push("Descricao exata da peca: " + desc);
+    userLines.push("IMPORTANTE: o titulo e todos os campos devem refletir EXATAMENTE essa descricao acima.");
+  }
+  userLines.push("");
+  userLines.push("Gere o JSON abaixo preenchido com os dados reais dessa peca:");
+  userLines.push("{");
+  userLines.push('  "titulo": "[OBRIGATORIO: minimo 60 chars, deve conter ' + pn + ' e os modelos da descricao acima]",');
+  userLines.push('  "dimensoes": {"comprimento_cm": 0, "largura_cm": 0, "altura_cm": 0, "peso_kg": 0},');
+  userLines.push('  "part_numbers_compativeis": [{"codigo": "string", "tipo": "original ou aftermarket", "marca": "string"}],');
+  userLines.push('  "disclaimer": "Dados gerados por IA com base nas informacoes fornecidas."');
+  userLines.push("}");
+  userLines.push("");
+  userLines.push("Regras:");
+  userLines.push("- tipo: apenas original ou aftermarket");
+  userLines.push("- Gere entre 5 e 8 itens em part_numbers_compativeis");
+  userLines.push("- O titulo DEVE conter o Part Number " + pn);
+  userLines.push("- Retorne SOMENTE o JSON, nada mais");
 
-  var userMsg = [
-    "Voce e um especialista em pecas de motocicletas e Mercado Livre Brasil.",
-    "Part Number: " + pn,
-    descLine,
-    "",
-    "Retorne APENAS JSON valido sem markdown:",
-    '{"titulo":"[min 60 chars: marca + ' + pn + ' + modelos + diferencial]","dimensoes":{"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},"part_numbers_compativeis":[{"codigo":"string","tipo":"original","marca":"string"}],"disclaimer":"string"}',
-    "",
-    "Regras:",
-    "- titulo deve ter minimo 60 caracteres e conter o Part Number " + pn,
-    "- tipo: apenas original ou aftermarket",
-    "- Gere entre 5 e 8 part_numbers_compativeis incluindo originais e aftermarket",
-    "- Retorne SOMENTE o JSON, sem nenhum texto antes ou depois"
-  ].join("\n");
+  var userMsg = userLines.join("\n");
 
   var res = await fetch(GROQ_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
-      temperature: 0.2,
+      temperature: 0.1,
       max_tokens: 1500,
       messages: [
         { role: "system", content: systemMsg },
