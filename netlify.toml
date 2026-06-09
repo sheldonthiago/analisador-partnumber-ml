@@ -10,3 +10,8 @@
   from = "/api/ml"
   to = "/.netlify/functions/ml-proxy"
   status = 200
+
+[[redirects]]
+  from = "/api/tavily"
+  to = "/.netlify/functions/tavily-proxy"
+  status = 200
