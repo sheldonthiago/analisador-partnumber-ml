@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Conectando ao Mercado Livre...</title>
+<style>
+  body { background: #0d0d0f; color: #e8e4dc; font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; gap: 16px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid #2e2e34; border-top-color: #f5c518; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  p { color: #666; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="spinner"></div>
+<p>Conectando ao Mercado Livre...</p>
+<script>
+  // Pass the code to the main page via localStorage then redirect
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
+  var error = params.get('error');
+  if (code) {
+    localStorage.setItem('ml_oauth_code', code);
+    window.location.href = '/';
+  } else if (error) {
+    localStorage.setItem('ml_oauth_error', error);
+    window.location.href = '/';
+  } else {
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>
