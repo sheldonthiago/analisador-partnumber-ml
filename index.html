@@ -93,7 +93,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Peças</div>
-  <div class="header-sub">Sucatão do Major · v4.2</div>
+  <div class="header-sub">Sucatão do Major · v4.3</div>
 </div>
 
 <div class="search-row">
@@ -225,33 +225,45 @@ async function runSearch() {
   document.getElementById("progress").style.display = "flex";
   document.getElementById("resultWrap").style.display = "none";
 
-  setStep("step1", "running", "Buscando informações da peça na web...");
+  setStep("step1", "running", "Buscando anúncios no Mercado Livre...");
   setStep("step2", "running", "Aguardando análise...");
   setStep("step3", "running", "Aguardando anúncios...");
 
   var tavilyData = null, analysisData = null, mlResults = [];
 
-  // STEP 1: Tavily search for part info
+  // STEP 1: ML search first — ML titles are the most reliable source
   try {
-    tavilyData = await searchTavily(
-      "peça moto part number " + pn + " especificações dimensões compatibilidade mercado livre",
-      6
-    );
-    setStep("step1", "done", "Informações da peça encontradas na web");
+    mlResults = await searchML(pn);
+    if (mlResults.length > 0) {
+      setStep("step1", "done", mlResults.length + " anúncio(s) encontrado(s) no Mercado Livre");
+    } else {
+      setStep("step1", "warn", "Sem resultados diretos no ML — buscando na web...");
+      tavilyData = await searchTavily("peça moto part number " + pn + " especificações dimensões compatibilidade", 5).catch(function() { return { results: [], answer: "" }; });
+    }
   } catch(e) {
-    setStep("step1", "warn", "Busca web limitada: " + e.message);
+    setStep("step1", "warn", "Erro na busca ML: " + e.message);
     tavilyData = { results: [], answer: "" };
   }
 
-  // STEP 2: Groq analysis
+  // STEP 2: Groq analysis — prefer ML titles as context
   try {
     var webContext = "";
-    if (tavilyData.answer) webContext += "Resposta resumida: " + tavilyData.answer + "\n\n";
-    if (tavilyData.results && tavilyData.results.length > 0) {
-      webContext += "Resultados encontrados:\n";
-      tavilyData.results.slice(0, 5).forEach(function(r, i) {
-        webContext += (i+1) + ". " + r.title + "\n" + (r.content || "").substring(0, 200) + "\n\n";
+
+    // Use ML titles as primary context (most reliable)
+    if (mlResults.length > 0) {
+      webContext += "Títulos de anúncios encontrados no Mercado Livre para este part number:\n";
+      mlResults.slice(0, 8).forEach(function(r, i) {
+        webContext += (i+1) + ". " + r.title + " — R$ " + r.price + "\n";
       });
+      webContext += "\nUSE ESSES TÍTULOS como base para identificar nome da peça, modelos e anos compatíveis.";
+    } else if (tavilyData) {
+      if (tavilyData.answer) webContext += "Resposta resumida: " + tavilyData.answer + "\n\n";
+      if (tavilyData.results && tavilyData.results.length > 0) {
+        webContext += "Resultados encontrados:\n";
+        tavilyData.results.slice(0, 5).forEach(function(r, i) {
+          webContext += (i+1) + ". " + r.title + "\n" + (r.content || "").substring(0, 200) + "\n\n";
+        });
+      }
     }
 
     var systemMsg = "Você é um especialista em peças de motocicletas e em otimização de anúncios para o Mercado Livre Brasil. " +
@@ -293,20 +305,17 @@ async function runSearch() {
     };
   }
 
-  // STEP 3: ML search — try PN first, then AI-suggested terms, then web fallback
+  // STEP 3: ML already searched in step 1 — if no results try AI-suggested terms or Tavily
   try {
-    mlResults = await searchML(pn);
-
     if (mlResults.length === 0 && analysisData.termos_busca_ml) {
       for (var i = 0; i < analysisData.termos_busca_ml.length; i++) {
         var termo = analysisData.termos_busca_ml[i];
-        mlResults = await searchML(termo);
-        if (mlResults.length > 0) break;
+        var tryResults = await searchML(termo);
+        if (tryResults.length > 0) { mlResults = tryResults; break; }
       }
     }
 
     if (mlResults.length === 0) {
-      // Fallback: Tavily ML-specific search
       var mlTavily = await searchTavily(pn + " " + (analysisData.nome_peca || "") + " mercado livre comprar", 8);
       setStep("step3", "warn", "Sem resultados diretos no ML — exibindo resultados da web");
       renderResults(analysisData, [], mlTavily.results || []);
