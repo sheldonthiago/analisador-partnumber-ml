@@ -93,7 +93,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Peças</div>
-  <div class="header-sub">Sucatão do Major · v4.3</div>
+  <div class="header-sub">Sucatão do Major · v4.4</div>
 </div>
 
 <div class="search-row">
@@ -186,6 +186,32 @@ async function searchML(query) {
   return data.results || [];
 }
 
+// Generate part number variations to maximize ML hits
+function pnVariations(pn) {
+  var vars = [pn];
+  // Try lowercase
+  vars.push(pn.toLowerCase());
+  // Try with hyphens inserted at common Honda/Yamaha positions
+  // e.g. 17555K3HB000 -> 17555-K3H-B000 or 17555-K3H-B00-0
+  var m1 = pn.match(/^(\d{5})([A-Z0-9]{3})([A-Z0-9]+)$/);
+  if (m1) vars.push(m1[1] + "-" + m1[2] + "-" + m1[3]);
+  var m2 = pn.match(/^(\d+)([A-Z]+\d*)([A-Z0-9]+)$/);
+  if (m2) vars.push(m2[1] + "-" + m2[2] + "-" + m2[3]);
+  // Try spaces
+  vars.push(pn.replace(/([A-Z])(\d)/g, "$1 $2").replace(/(\d)([A-Z])/g, "$1 $2"));
+  // Remove duplicates
+  return vars.filter(function(v, i, a) { return a.indexOf(v) === i && v.length > 3; });
+}
+
+async function searchMLWithVariations(pn) {
+  var variations = pnVariations(pn);
+  for (var i = 0; i < variations.length; i++) {
+    var results = await searchML(variations[i]);
+    if (results.length > 0) return { results: results, query: variations[i] };
+  }
+  return { results: [], query: pn };
+}
+
 async function searchTavily(query, max) {
   var res = await fetch(TAVILY_URL, {
     method: "POST",
@@ -233,11 +259,12 @@ async function runSearch() {
 
   // STEP 1: ML search first — ML titles are the most reliable source
   try {
-    mlResults = await searchML(pn);
+    var mlSearch = await searchMLWithVariations(pn);
+    mlResults = mlSearch.results;
     if (mlResults.length > 0) {
-      setStep("step1", "done", mlResults.length + " anúncio(s) encontrado(s) no Mercado Livre");
+      setStep("step1", "done", mlResults.length + " anúncio(s) encontrado(s) no Mercado Livre (busca: " + mlSearch.query + ")");
     } else {
-      setStep("step1", "warn", "Sem resultados diretos no ML — buscando na web...");
+      setStep("step1", "warn", "Sem resultados no ML — buscando na web...");
       tavilyData = await searchTavily("peça moto part number " + pn + " especificações dimensões compatibilidade", 5).catch(function() { return { results: [], answer: "" }; });
     }
   } catch(e) {
@@ -313,6 +340,11 @@ async function runSearch() {
         var tryResults = await searchML(termo);
         if (tryResults.length > 0) { mlResults = tryResults; break; }
       }
+    }
+    // Last resort: search by identified part name
+    if (mlResults.length === 0 && analysisData.nome_peca && analysisData.nome_peca !== pn) {
+      var nameResults = await searchML(analysisData.nome_peca);
+      if (nameResults.length > 0) mlResults = nameResults;
     }
 
     if (mlResults.length === 0) {
