@@ -91,7 +91,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Peças</div>
-  <div class="header-sub">Sucatão do Major · v5.0</div>
+  <div class="header-sub">Sucatão do Major · v5.1</div>
 </div>
 
 <!-- Auth Bar -->
@@ -142,7 +142,7 @@
 
 <script>
 var ML_CLIENT_ID = "6526893447891816";
-var REDIRECT_URI = "https://merry-bublanina-ee4513.netlify.app/";
+var REDIRECT_URI = "https://merry-bublanina-ee4513.netlify.app/callback";
 var TAVILY_URL = "/api/tavily";
 var GROQ_URL = "/api/groq";
 var ML_TOKEN_URL = "/api/ml-token";
@@ -194,8 +194,23 @@ function disconnectML() {
 }
 
 async function handleOAuthCallback() {
+  // Check URL params first (direct redirect)
   var params = new URLSearchParams(window.location.search);
   var code = params.get("code");
+
+  // Also check localStorage (set by callback.html)
+  if (!code) {
+    code = localStorage.getItem("ml_oauth_code");
+    if (code) localStorage.removeItem("ml_oauth_code");
+  }
+
+  var oauthError = localStorage.getItem("ml_oauth_error");
+  if (oauthError) {
+    localStorage.removeItem("ml_oauth_error");
+    alert("Erro ao conectar: " + oauthError);
+    return;
+  }
+
   if (!code) return;
 
   // Clean URL
