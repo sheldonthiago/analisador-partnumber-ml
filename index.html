@@ -93,7 +93,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Peças</div>
-  <div class="header-sub">Sucatão do Major · v4.1</div>
+  <div class="header-sub">Sucatão do Major · v4.2</div>
 </div>
 
 <div class="search-row">
@@ -271,7 +271,7 @@ async function runSearch() {
       "Retorne JSON com exatamente esta estrutura:",
       '{',
       '  "nome_peca": "nome completo da peça identificada",',
-      '  "titulo_anuncio": "titulo otimizado para ML — REGRAS OBRIGATORIAS: (1) entre 60 e 120 caracteres, (2) formato: [Nome da Peca] [Marca Moto] [Modelo(s)] [Ano(s)] [Part Number ' + pn + '] Original, (3) incluir anos de compatibilidade ex: 2014 2015 2016, (4) sem caracteres especiais como / ou |, (5) palavras mais importantes no inicio",',
+      '  "titulo_anuncio": "titulo otimizado para ML — REGRAS OBRIGATORIAS: (1) entre 60 e 120 caracteres, (2) formato: [Nome da Peca] [Marca Moto] [Modelo(s)] [Ano(s)] Original, (3) incluir anos de compatibilidade ex: 2014 2015 2016, (4) sem caracteres especiais como / ou |, (5) palavras mais importantes no inicio, (6) NAO incluir o part number no titulo",',
       '  "dimensoes": { "comprimento_cm": 0, "largura_cm": 0, "altura_cm": 0, "peso_kg": 0 },',
       '  "part_numbers_compativeis": [{ "codigo": "string", "tipo": "original", "marca": "string" }],',
       '  "termos_busca_ml": ["termo1", "termo2", "termo3"],',
