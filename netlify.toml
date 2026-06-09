@@ -15,3 +15,13 @@
   from = "/api/tavily"
   to = "/.netlify/functions/tavily-proxy"
   status = 200
+
+[[redirects]]
+  from = "/api/ml-token"
+  to = "/.netlify/functions/ml-token"
+  status = 200
+
+[[redirects]]
+  from = "/api/ml-search"
+  to = "/.netlify/functions/ml-search"
+  status = 200
