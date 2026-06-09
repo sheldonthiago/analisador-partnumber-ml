@@ -93,7 +93,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Peças</div>
-  <div class="header-sub">Sucatão do Major · v4.0</div>
+  <div class="header-sub">Sucatão do Major · v4.1</div>
 </div>
 
 <div class="search-row">
@@ -254,9 +254,12 @@ async function runSearch() {
       });
     }
 
-    var systemMsg = "Você é um especialista em peças de motocicletas para o Mercado Livre Brasil. " +
-      "Use APENAS as informações fornecidas pelo contexto web para preencher os campos. " +
-      "Se não encontrar uma informação, estime com base no tipo de peça. " +
+    var systemMsg = "Você é um especialista em peças de motocicletas e em otimização de anúncios para o Mercado Livre Brasil. " +
+      "Você conhece as melhores práticas de SEO do ML: título deve ter entre 60-120 caracteres, " +
+      "começar com o nome da peça, incluir marca e modelo da moto, incluir os anos de compatibilidade separados por espaço (ex: 2014 2015 2016 2017), " +
+      "incluir o part number e finalizar com Original ou Genuine. Sem barras, pipes ou caracteres especiais. " +
+      "Use as informações da web para preencher os campos com precisão. " +
+      "Se não encontrar uma informação específica, estime com base no tipo de peça. " +
       "Responda SOMENTE com JSON válido, sem markdown.";
 
     var userMsg = [
@@ -268,7 +271,7 @@ async function runSearch() {
       "Retorne JSON com exatamente esta estrutura:",
       '{',
       '  "nome_peca": "nome completo da peça identificada",',
-      '  "titulo_anuncio": "título otimizado para ML com min 60 chars, contendo ' + pn + ', modelos compatíveis e diferencial",',
+      '  "titulo_anuncio": "titulo otimizado para ML — REGRAS OBRIGATORIAS: (1) entre 60 e 120 caracteres, (2) formato: [Nome da Peca] [Marca Moto] [Modelo(s)] [Ano(s)] [Part Number ' + pn + '] Original, (3) incluir anos de compatibilidade ex: 2014 2015 2016, (4) sem caracteres especiais como / ou |, (5) palavras mais importantes no inicio",',
       '  "dimensoes": { "comprimento_cm": 0, "largura_cm": 0, "altura_cm": 0, "peso_kg": 0 },',
       '  "part_numbers_compativeis": [{ "codigo": "string", "tipo": "original", "marca": "string" }],',
       '  "termos_busca_ml": ["termo1", "termo2", "termo3"],',
