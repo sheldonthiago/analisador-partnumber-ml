@@ -32,10 +32,10 @@
 
   .result-section { background: #18181c; border: 1px solid #2e2e34; border-radius: 10px; overflow: hidden; display: none; }
   .result-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #2e2e34; background: #1e1e24; }
-  .result-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #f5c518; }
-  .result-badge { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 10px; color: #555; background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 2px 8px; }
+  .result-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #f5c518; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .result-badge { flex-shrink: 0; font-family: 'DM Mono', monospace; font-size: 10px; color: #555; background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 2px 8px; }
   .result-badge.green { border-color: #3a8c4a; color: #6ecf80; }
-  .result-badge.yellow { border-color: #8c7a1a; color: #f5c518; }
+  .result-badge.blue { border-color: #1a3a6a; color: #6ab0ff; }
 
   .step { display: flex; align-items: center; gap: 10px; padding: 12px 16px; font-family: 'DM Mono', monospace; font-size: 12px; color: #555; }
   .step.running { color: #f5c518; }
@@ -43,22 +43,23 @@
   .spinner { width: 13px; height: 13px; border: 2px solid #2e2e34; border-top-color: #f5c518; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  .source-tag { display: inline-block; font-size: 9px; font-family: 'DM Mono', monospace; padding: 1px 5px; border-radius: 3px; margin-left: 4px; vertical-align: middle; }
+  .source-ml { background: #1a3a22; color: #6ecf80; border: 1px solid #2a5a32; }
+  .source-web { background: #1a2a4a; color: #6ab0ff; border: 1px solid #1a3a6a; }
+
   .ads-table { width: 100%; border-collapse: collapse; }
   .ads-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #444; padding: 8px 12px; border-bottom: 1px solid #2e2e34; text-align: left; }
-  .ads-table td { padding: 9px 12px; border-bottom: 1px solid #1c1c22; font-size: 12px; color: #ccc; vertical-align: middle; }
+  .ads-table td { padding: 9px 12px; border-bottom: 1px solid #1c1c22; font-size: 11px; color: #ccc; vertical-align: middle; }
   .ads-table tr:last-child td { border-bottom: none; }
   .ads-table tr:hover td { background: #1e1e26; }
   .price { font-family: 'DM Mono', monospace; color: #f5c518; font-weight: 500; white-space: nowrap; }
-  .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-family: 'DM Mono', monospace; }
+  .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-family: 'DM Mono', monospace; }
   .badge.novo { background: #1a3a22; color: #6ecf80; border: 1px solid #2a5a32; }
   .badge.usado { background: #3a2a10; color: #e0a040; border: 1px solid #5a4a20; }
-  .ad-title { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+  .ad-title { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ad-link { color: #b0c4ff; text-decoration: none; font-size: 11px; }
   .ad-link:hover { color: #f5c518; }
   .no-results { padding: 24px 16px; text-align: center; color: #444; font-size: 13px; font-style: italic; }
-
-  .summary-bar { display: none; background: #18181c; border: 1px solid #2e2e34; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 12px; color: #666; font-family: 'DM Mono', monospace; }
-  .summary-bar span { color: #f5c518; }
 </style>
 </head>
 <body>
@@ -66,7 +67,7 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Pesquisa de Peças</div>
-  <div class="header-sub">Sucatão do Major · v3.0</div>
+  <div class="header-sub">Sucatão do Major · v3.1</div>
 </div>
 
 <div class="search-grid">
@@ -80,68 +81,131 @@
   </div>
 </div>
 
-<button class="btn-search" id="btnSearch" onclick="runSearch()">🔍 Pesquisar no Mercado Livre</button>
-
-<div class="summary-bar" id="summaryBar">Pesquisando: <span id="summaryText"></span></div>
+<button class="btn-search" id="btnSearch" onclick="runSearch()">🔍 Pesquisar</button>
 
 <div class="results-grid">
-  <!-- Part Number Results -->
   <div class="result-section" id="sectionPN">
     <div class="result-header">
       <span>🔢</span>
       <span class="result-title" id="titlePN">Part Number</span>
       <span class="result-badge" id="badgePN">—</span>
     </div>
-    <div id="bodyPN">
-      <div class="step running"><div class="spinner"></div> Buscando...</div>
-    </div>
+    <div id="bodyPN"></div>
   </div>
 
-  <!-- Descrição Results -->
   <div class="result-section" id="sectionDesc">
     <div class="result-header">
       <span>📝</span>
       <span class="result-title" id="titleDesc">Descrição</span>
       <span class="result-badge" id="badgeDesc">—</span>
     </div>
-    <div id="bodyDesc">
-      <div class="step running"><div class="spinner"></div> Buscando...</div>
-    </div>
+    <div id="bodyDesc"></div>
   </div>
 </div>
 
 <script>
 var ML_URL = "/api/ml";
+var TAVILY_URL = "/api/tavily";
 
 async function searchML(query) {
   var res = await fetch(ML_URL + "?q=" + encodeURIComponent(query) + "&limit=10&site_id=MLB");
-  if (!res.ok) throw new Error("Erro ML API: " + res.status);
+  if (!res.ok) throw new Error("ML API: " + res.status);
   var data = await res.json();
   return data.results || [];
 }
 
-function renderTable(results) {
-  if (!results || results.length === 0) {
-    return '<div class="no-results">Nenhum anúncio encontrado.</div>';
-  }
+async function searchTavily(query) {
+  var res = await fetch(TAVILY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: query })
+  });
+  if (!res.ok) throw new Error("Tavily: " + res.status);
+  var data = await res.json();
+  return data.results || [];
+}
+
+function renderMLTable(results) {
   var rows = results.map(function(a, i) {
     var cond = a.condition === "new" ? "novo" : "usado";
     var preco = Number(a.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
-    var titulo = (a.title || "—");
+    var titulo = a.title || "—";
     var link = a.permalink || "#";
     var seller = a.seller && a.seller.nickname ? a.seller.nickname : "—";
     return "<tr>" +
-      "<td style='color:#444;font-family:monospace;font-size:10px'>" + String(i+1).padStart(2,"0") + "</td>" +
-      "<td><div class='ad-title' title='" + titulo.replace(/'/g,"") + "'>" + titulo + "</div></td>" +
+      "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
+      "<td><div class='ad-title' title='" + titulo.replace(/'/g, "") + "'>" + titulo + "</div></td>" +
       "<td class='price'>R$ " + preco + "</td>" +
       "<td><span class='badge " + cond + "'>" + cond + "</span></td>" +
-      "<td style='font-size:10px;color:#666;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>" + seller + "</td>" +
+      "<td style='font-size:10px;color:#555;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>" + seller + "</td>" +
       "<td><a class='ad-link' href='" + link + "' target='_blank' rel='noopener'>Ver ↗</a></td>" +
       "</tr>";
   }).join("");
   return "<div style='overflow-x:auto'><table class='ads-table'>" +
-    "<thead><tr><th>#</th><th>Título</th><th>Preço</th><th>Cond.</th><th>Vendedor</th><th>Link</th></tr></thead>" +
+    "<thead><tr><th>#</th><th>Título</th><th>Preço</th><th>Cond.</th><th>Vendedor</th><th></th></tr></thead>" +
     "<tbody>" + rows + "</tbody></table></div>";
+}
+
+function renderTavilyTable(results) {
+  var rows = results.map(function(a, i) {
+    var titulo = a.title || "—";
+    var link = a.url || "#";
+    var snippet = a.content ? a.content.substring(0, 80) + "..." : "—";
+    return "<tr>" +
+      "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
+      "<td><div class='ad-title' title='" + titulo.replace(/'/g, "") + "'>" + titulo + "</div>" +
+      "<div style='font-size:10px;color:#444;margin-top:2px'>" + snippet + "</div></td>" +
+      "<td><a class='ad-link' href='" + link + "' target='_blank' rel='noopener'>Ver ↗</a></td>" +
+      "</tr>";
+  }).join("");
+  return "<div style='overflow-x:auto'><table class='ads-table'>" +
+    "<thead><tr><th>#</th><th>Resultado Web <span class='source-tag source-web'>Tavily</span></th><th></th></tr></thead>" +
+    "<tbody>" + rows + "</tbody></table></div>";
+}
+
+async function doSearch(query, sectionId, titleId, badgeId, bodyId) {
+  var section = document.getElementById(sectionId);
+  var badge = document.getElementById(badgeId);
+  var body = document.getElementById(bodyId);
+
+  section.style.display = "block";
+  document.getElementById(titleId).textContent = query.length > 35 ? query.substring(0,35)+"..." : query;
+  badge.textContent = "buscando...";
+  badge.className = "result-badge";
+  body.innerHTML = "<div class='step running'><div class='spinner'></div> Buscando no Mercado Livre...</div>";
+
+  try {
+    var mlResults = await searchML(query);
+
+    if (mlResults.length > 0) {
+      badge.textContent = mlResults.length + " resultado(s) ML";
+      badge.className = "result-badge green";
+      body.innerHTML = renderMLTable(mlResults);
+    } else {
+      // Fallback to Tavily
+      body.innerHTML = "<div class='step running'><div class='spinner'></div> Sem resultados no ML, buscando na web...</div>";
+      try {
+        var tavilyResults = await searchTavily(query + " mercado livre");
+        if (tavilyResults.length > 0) {
+          badge.textContent = tavilyResults.length + " resultado(s) web";
+          badge.className = "result-badge blue";
+          body.innerHTML = renderTavilyTable(tavilyResults);
+        } else {
+          badge.textContent = "0 resultados";
+          badge.className = "result-badge";
+          body.innerHTML = "<div class='no-results'>Nenhum resultado encontrado no ML ou na web.</div>";
+        }
+      } catch(e2) {
+        badge.textContent = "0 resultados ML";
+        badge.className = "result-badge";
+        body.innerHTML = "<div class='no-results'>Sem resultados no Mercado Livre.</div>";
+      }
+    }
+  } catch(e) {
+    badge.textContent = "erro";
+    badge.className = "result-badge";
+    body.innerHTML = "<div class='step error'>❌ " + e.message + "</div>";
+  }
 }
 
 async function runSearch() {
@@ -149,78 +213,24 @@ async function runSearch() {
   var desc = document.getElementById("inputDesc").value.trim();
 
   if (!pn && !desc) {
-    alert("Informe o Part Number ou a Descrição para pesquisar.");
+    alert("Informe o Part Number ou a Descrição.");
     return;
   }
 
   document.getElementById("btnSearch").disabled = true;
-  document.getElementById("summaryBar").style.display = "block";
-  document.getElementById("summaryText").textContent = [pn, desc].filter(Boolean).join(" + ");
 
-  // Show/hide sections
-  var sPN = document.getElementById("sectionPN");
-  var sDesc = document.getElementById("sectionDesc");
+  // Hide sections initially
+  document.getElementById("sectionPN").style.display = "none";
+  document.getElementById("sectionDesc").style.display = "none";
 
-  if (pn) {
-    sPN.style.display = "block";
-    document.getElementById("titlePN").textContent = pn;
-    document.getElementById("badgePN").textContent = "buscando...";
-    document.getElementById("badgePN").className = "result-badge";
-    document.getElementById("bodyPN").innerHTML = "<div class='step running'><div class='spinner'></div> Buscando no Mercado Livre...</div>";
-  } else {
-    sPN.style.display = "none";
-  }
-
-  if (desc) {
-    sDesc.style.display = "block";
-    document.getElementById("titleDesc").textContent = desc.length > 30 ? desc.substring(0,30)+"..." : desc;
-    document.getElementById("badgeDesc").textContent = "buscando...";
-    document.getElementById("badgeDesc").className = "result-badge";
-    document.getElementById("bodyDesc").innerHTML = "<div class='step running'><div class='spinner'></div> Buscando no Mercado Livre...</div>";
-  } else {
-    sDesc.style.display = "none";
-  }
-
-  // Run searches in parallel
   var promises = [];
-
-  if (pn) {
-    promises.push(
-      searchML(pn)
-        .then(function(results) {
-          var count = results.length;
-          document.getElementById("badgePN").textContent = count + " resultado(s)";
-          document.getElementById("badgePN").className = "result-badge " + (count > 0 ? "green" : "");
-          document.getElementById("bodyPN").innerHTML = renderTable(results);
-        })
-        .catch(function(e) {
-          document.getElementById("badgePN").textContent = "erro";
-          document.getElementById("bodyPN").innerHTML = "<div class='step error'>❌ " + e.message + "</div>";
-        })
-    );
-  }
-
-  if (desc) {
-    promises.push(
-      searchML(desc)
-        .then(function(results) {
-          var count = results.length;
-          document.getElementById("badgeDesc").textContent = count + " resultado(s)";
-          document.getElementById("badgeDesc").className = "result-badge " + (count > 0 ? "green" : "");
-          document.getElementById("bodyDesc").innerHTML = renderTable(results);
-        })
-        .catch(function(e) {
-          document.getElementById("badgeDesc").textContent = "erro";
-          document.getElementById("bodyDesc").innerHTML = "<div class='step error'>❌ " + e.message + "</div>";
-        })
-    );
-  }
+  if (pn) promises.push(doSearch(pn, "sectionPN", "titlePN", "badgePN", "bodyPN"));
+  if (desc) promises.push(doSearch(desc, "sectionDesc", "titleDesc", "badgeDesc", "bodyDesc"));
 
   await Promise.all(promises);
   document.getElementById("btnSearch").disabled = false;
 }
 
-// Enter key support
 ["inputPN","inputDesc"].forEach(function(id) {
   document.getElementById(id).addEventListener("keydown", function(e) {
     if (e.key === "Enter") runSearch();
