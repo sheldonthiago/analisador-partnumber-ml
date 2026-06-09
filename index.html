@@ -2,51 +2,68 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Pesquisa de Peças — Mercado Livre</title>
+<title>Analisador de Peças — Sucatão do Major</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0d0d0f; color: #e8e4dc; font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 28px 24px; }
+  body { background: #0d0d0f; color: #e8e4dc; font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 24px 20px; max-width: 960px; margin: 0 auto; }
 
-  .header { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 28px; border-bottom: 1px solid #2a2a2e; padding-bottom: 18px; }
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid #2a2a2e; padding-bottom: 16px; }
   .logo-box { background: #f5c518; color: #0d0d0f; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.08em; padding: 5px 9px; border-radius: 4px; }
-  .header-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: #e8e4dc; }
-  .header-sub { font-size: 11px; color: #555; margin-left: auto; font-family: 'DM Mono', monospace; }
+  .header-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #e8e4dc; }
+  .header-sub { font-size: 11px; color: #444; margin-left: auto; font-family: 'DM Mono', monospace; }
 
-  .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  @media (max-width: 700px) { .search-grid { grid-template-columns: 1fr; } }
-
-  .search-box { background: #18181c; border: 1px solid #2e2e34; border-radius: 10px; padding: 16px; }
-  .search-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #f5c518; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-  .search-input { width: 100%; background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 6px; color: #e8e4dc; font-family: 'DM Mono', monospace; font-size: 13px; padding: 10px 14px; outline: none; transition: border-color 0.2s; }
+  .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .search-input { flex: 1; background: #18181c; border: 1px solid #2e2e34; border-radius: 8px; color: #e8e4dc; font-family: 'DM Mono', monospace; font-size: 15px; padding: 13px 16px; outline: none; transition: border-color 0.2s; letter-spacing: 0.05em; }
   .search-input:focus { border-color: #f5c518; }
-  .search-input::placeholder { color: #3a3a42; }
-
-  .btn-search { width: 100%; background: #f5c518; color: #0d0d0f; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; padding: 14px; cursor: pointer; letter-spacing: 0.05em; transition: background 0.15s; margin-bottom: 28px; }
+  .search-input::placeholder { color: #3a3a42; font-size: 13px; }
+  .btn-search { background: #f5c518; color: #0d0d0f; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; padding: 13px 24px; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
   .btn-search:hover { background: #ffd740; }
-  .btn-search:active { transform: scale(0.99); }
   .btn-search:disabled { background: #3a3a3a; color: #666; cursor: not-allowed; }
 
-  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 700px) { .results-grid { grid-template-columns: 1fr; } }
-
-  .result-section { background: #18181c; border: 1px solid #2e2e34; border-radius: 10px; overflow: hidden; display: none; }
-  .result-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #2e2e34; background: #1e1e24; }
-  .result-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #f5c518; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .result-badge { flex-shrink: 0; font-family: 'DM Mono', monospace; font-size: 10px; color: #555; background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 2px 8px; }
-  .result-badge.green { border-color: #3a8c4a; color: #6ecf80; }
-  .result-badge.blue { border-color: #1a3a6a; color: #6ab0ff; }
-
-  .step { display: flex; align-items: center; gap: 10px; padding: 12px 16px; font-family: 'DM Mono', monospace; font-size: 12px; color: #555; }
-  .step.running { color: #f5c518; }
-  .step.error { color: #ff8080; }
-  .spinner { width: 13px; height: 13px; border: 2px solid #2e2e34; border-top-color: #f5c518; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  /* Progress */
+  .progress { display: none; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .pstep { display: flex; align-items: center; gap: 10px; background: #18181c; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; font-family: 'DM Mono', monospace; font-size: 11px; color: #555; transition: all 0.2s; }
+  .pstep.running { border-color: #f5c518; color: #f5c518; }
+  .pstep.done { border-color: #3a8c4a; color: #6ecf80; }
+  .pstep.warn { border-color: #8c6a1a; color: #e0a040; }
+  .pstep.error { border-color: #5a2020; color: #ff8080; }
+  .spinner { width: 12px; height: 12px; border: 2px solid #333; border-top-color: #f5c518; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .source-tag { display: inline-block; font-size: 9px; font-family: 'DM Mono', monospace; padding: 1px 5px; border-radius: 3px; margin-left: 4px; vertical-align: middle; }
-  .source-ml { background: #1a3a22; color: #6ecf80; border: 1px solid #2a5a32; }
-  .source-web { background: #1a2a4a; color: #6ab0ff; border: 1px solid #1a3a6a; }
+  /* Result layout */
+  .result-wrap { display: none; flex-direction: column; gap: 16px; }
 
+  .card { background: #18181c; border: 1px solid #2e2e34; border-radius: 10px; overflow: hidden; }
+  .card-header { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1px solid #2e2e34; background: #1e1e24; }
+  .card-icon { font-size: 14px; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #f5c518; }
+  .card-badge { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 10px; color: #555; background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 2px 8px; }
+  .card-badge.green { border-color: #3a8c4a; color: #6ecf80; }
+  .card-badge.yellow { border-color: #8c7a1a; color: #f5c518; }
+  .card-badge.blue { border-color: #1a3a6a; color: #6ab0ff; }
+  .card-body { padding: 16px; }
+
+  /* Título */
+  .title-box { background: #0d0d0f; border: 1px solid #f5c518; border-radius: 6px; padding: 12px 14px; font-family: 'DM Mono', monospace; font-size: 13px; color: #f5c518; line-height: 1.5; margin-bottom: 8px; }
+  .char-row { display: flex; align-items: center; gap: 12px; }
+  .char-count { font-size: 10px; color: #555; font-family: 'DM Mono', monospace; }
+  .copy-btn { background: none; border: 1px solid #2e2e34; color: #555; border-radius: 4px; padding: 3px 8px; font-size: 10px; cursor: pointer; transition: all 0.15s; }
+  .copy-btn:hover { border-color: #f5c518; color: #f5c518; }
+
+  /* Dimensões */
+  .dims-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .dim-chip { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; text-align: center; min-width: 75px; }
+  .dim-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+  .dim-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: #e8e4dc; }
+
+  /* Part numbers */
+  .pn-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pn-tag { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 4px 10px; font-family: 'DM Mono', monospace; font-size: 11px; color: #b0c4ff; }
+  .pn-tag.original { border-color: #3a8c4a; color: #6ecf80; }
+  .pn-tag.aftermarket { border-color: #5a4a8c; color: #a88cff; }
+
+  /* Tabela anúncios */
   .ads-table { width: 100%; border-collapse: collapse; }
   .ads-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #444; padding: 8px 12px; border-bottom: 1px solid #2e2e34; text-align: left; }
   .ads-table td { padding: 9px 12px; border-bottom: 1px solid #1c1c22; font-size: 11px; color: #ccc; vertical-align: middle; }
@@ -56,185 +73,345 @@
   .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-family: 'DM Mono', monospace; }
   .badge.novo { background: #1a3a22; color: #6ecf80; border: 1px solid #2a5a32; }
   .badge.usado { background: #3a2a10; color: #e0a040; border: 1px solid #5a4a20; }
-  .ad-title { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ad-link { color: #b0c4ff; text-decoration: none; font-size: 11px; }
+  .ad-title { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ad-link { color: #b0c4ff; text-decoration: none; }
   .ad-link:hover { color: #f5c518; }
-  .no-results { padding: 24px 16px; text-align: center; color: #444; font-size: 13px; font-style: italic; }
+  .no-results { padding: 20px; text-align: center; color: #444; font-size: 13px; font-style: italic; }
+
+  /* Price summary */
+  .price-summary { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid #2e2e34; }
+  .price-chip { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; text-align: center; flex: 1; min-width: 90px; }
+  .price-chip-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+  .price-chip-value { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #f5c518; }
+
+  .info-text { font-size: 12px; color: #555; line-height: 1.6; }
+  .disclaimer { font-size: 10px; color: #333; font-style: italic; margin-top: 8px; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="logo-box">ML</div>
-  <div class="header-title">Pesquisa de Peças</div>
-  <div class="header-sub">Sucatão do Major · v3.1</div>
+  <div class="header-title">Analisador de Peças</div>
+  <div class="header-sub">Sucatão do Major · v4.0</div>
 </div>
 
-<div class="search-grid">
-  <div class="search-box">
-    <div class="search-label">🔢 Part Number</div>
-    <input class="search-input" id="inputPN" type="text" placeholder="Ex: 33510K1ZJ100" autocomplete="off" spellcheck="false" />
-  </div>
-  <div class="search-box">
-    <div class="search-label">📝 Descrição do Produto</div>
-    <input class="search-input" id="inputDesc" type="text" placeholder="Ex: Pisca traseiro Honda CBR 500R original" autocomplete="off" />
-  </div>
+<div class="search-row">
+  <input class="search-input" id="inputPN" type="text" placeholder="Digite o Part Number — Ex: 33510K1ZJ100" autocomplete="off" spellcheck="false" />
+  <button class="btn-search" id="btnSearch" onclick="runSearch()">🔍 Analisar</button>
 </div>
 
-<button class="btn-search" id="btnSearch" onclick="runSearch()">🔍 Pesquisar</button>
+<div class="progress" id="progress">
+  <div class="pstep" id="step1"><span>⏳</span> Aguardando...</div>
+  <div class="pstep" id="step2"><span>⏳</span> Aguardando...</div>
+  <div class="pstep" id="step3"><span>⏳</span> Aguardando...</div>
+</div>
 
-<div class="results-grid">
-  <div class="result-section" id="sectionPN">
-    <div class="result-header">
-      <span>🔢</span>
-      <span class="result-title" id="titlePN">Part Number</span>
-      <span class="result-badge" id="badgePN">—</span>
+<div class="result-wrap" id="resultWrap">
+
+  <!-- Título -->
+  <div class="card" id="cardTitulo">
+    <div class="card-header">
+      <span class="card-icon">📝</span>
+      <span class="card-title">Título Otimizado para Anúncio</span>
+      <span class="card-badge yellow" id="badgeTitulo">—</span>
     </div>
-    <div id="bodyPN"></div>
+    <div class="card-body">
+      <div class="title-box" id="tituloBox">—</div>
+      <div class="char-row">
+        <span class="char-count" id="charCount">—</span>
+        <button class="copy-btn" onclick="copyTitulo()">Copiar</button>
+      </div>
+    </div>
   </div>
 
-  <div class="result-section" id="sectionDesc">
-    <div class="result-header">
-      <span>📝</span>
-      <span class="result-title" id="titleDesc">Descrição</span>
-      <span class="result-badge" id="badgeDesc">—</span>
+  <!-- Dimensões -->
+  <div class="card" id="cardDims">
+    <div class="card-header">
+      <span class="card-icon">📦</span>
+      <span class="card-title">Dimensões Estimadas para Frete</span>
+      <span class="card-badge" id="badgeDims">Mercado Envios</span>
     </div>
-    <div id="bodyDesc"></div>
+    <div class="card-body">
+      <div class="dims-row" id="dimsRow">—</div>
+    </div>
   </div>
+
+  <!-- Part Numbers -->
+  <div class="card" id="cardPNs">
+    <div class="card-header">
+      <span class="card-icon">🔗</span>
+      <span class="card-title">Part Numbers Compatíveis</span>
+      <span class="card-badge" id="badgePNs">—</span>
+    </div>
+    <div class="card-body">
+      <div class="pn-grid" id="pnGrid">—</div>
+    </div>
+  </div>
+
+  <!-- Anúncios ML -->
+  <div class="card" id="cardAds">
+    <div class="card-header">
+      <span class="card-icon">🛒</span>
+      <span class="card-title">Anúncios no Mercado Livre</span>
+      <span class="card-badge" id="badgeAds">—</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="ads-table">
+        <thead><tr><th>#</th><th>Título</th><th>Preço</th><th>Cond.</th><th>Vendedor</th><th></th></tr></thead>
+        <tbody id="adsBody"><tr><td colspan="6" class="no-results">Aguardando pesquisa...</td></tr></tbody>
+      </table>
+    </div>
+    <div id="priceSummary"></div>
+  </div>
+
 </div>
 
 <script>
 var ML_URL = "/api/ml";
 var TAVILY_URL = "/api/tavily";
+var GROQ_URL = "/api/groq";
+
+function setStep(id, state, text) {
+  var el = document.getElementById(id);
+  var icons = { running: '<div class="spinner"></div>', done: '✅', warn: '⚠️', error: '❌' };
+  el.className = 'pstep ' + state;
+  el.innerHTML = '<span>' + (icons[state] || '⏳') + '</span> ' + text;
+}
 
 async function searchML(query) {
   var res = await fetch(ML_URL + "?q=" + encodeURIComponent(query) + "&limit=10&site_id=MLB");
-  if (!res.ok) throw new Error("ML API: " + res.status);
+  if (!res.ok) throw new Error("ML " + res.status);
   var data = await res.json();
   return data.results || [];
 }
 
-async function searchTavily(query) {
+async function searchTavily(query, max) {
   var res = await fetch(TAVILY_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: query })
+    body: JSON.stringify({ query: query, max_results: max || 5 })
   });
-  if (!res.ok) throw new Error("Tavily: " + res.status);
+  if (!res.ok) throw new Error("Tavily " + res.status);
+  return await res.json();
+}
+
+async function callGroq(systemMsg, userMsg) {
+  var res = await fetch(GROQ_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.1,
+      max_tokens: 1500,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: systemMsg },
+        { role: "user", content: userMsg }
+      ]
+    })
+  });
   var data = await res.json();
-  return data.results || [];
-}
-
-function renderMLTable(results) {
-  var rows = results.map(function(a, i) {
-    var cond = a.condition === "new" ? "novo" : "usado";
-    var preco = Number(a.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
-    var titulo = a.title || "—";
-    var link = a.permalink || "#";
-    var seller = a.seller && a.seller.nickname ? a.seller.nickname : "—";
-    return "<tr>" +
-      "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
-      "<td><div class='ad-title' title='" + titulo.replace(/'/g, "") + "'>" + titulo + "</div></td>" +
-      "<td class='price'>R$ " + preco + "</td>" +
-      "<td><span class='badge " + cond + "'>" + cond + "</span></td>" +
-      "<td style='font-size:10px;color:#555;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>" + seller + "</td>" +
-      "<td><a class='ad-link' href='" + link + "' target='_blank' rel='noopener'>Ver ↗</a></td>" +
-      "</tr>";
-  }).join("");
-  return "<div style='overflow-x:auto'><table class='ads-table'>" +
-    "<thead><tr><th>#</th><th>Título</th><th>Preço</th><th>Cond.</th><th>Vendedor</th><th></th></tr></thead>" +
-    "<tbody>" + rows + "</tbody></table></div>";
-}
-
-function renderTavilyTable(results) {
-  var rows = results.map(function(a, i) {
-    var titulo = a.title || "—";
-    var link = a.url || "#";
-    var snippet = a.content ? a.content.substring(0, 80) + "..." : "—";
-    return "<tr>" +
-      "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
-      "<td><div class='ad-title' title='" + titulo.replace(/'/g, "") + "'>" + titulo + "</div>" +
-      "<div style='font-size:10px;color:#444;margin-top:2px'>" + snippet + "</div></td>" +
-      "<td><a class='ad-link' href='" + link + "' target='_blank' rel='noopener'>Ver ↗</a></td>" +
-      "</tr>";
-  }).join("");
-  return "<div style='overflow-x:auto'><table class='ads-table'>" +
-    "<thead><tr><th>#</th><th>Resultado Web <span class='source-tag source-web'>Tavily</span></th><th></th></tr></thead>" +
-    "<tbody>" + rows + "</tbody></table></div>";
-}
-
-async function doSearch(query, sectionId, titleId, badgeId, bodyId) {
-  var section = document.getElementById(sectionId);
-  var badge = document.getElementById(badgeId);
-  var body = document.getElementById(bodyId);
-
-  section.style.display = "block";
-  document.getElementById(titleId).textContent = query.length > 35 ? query.substring(0,35)+"..." : query;
-  badge.textContent = "buscando...";
-  badge.className = "result-badge";
-  body.innerHTML = "<div class='step running'><div class='spinner'></div> Buscando no Mercado Livre...</div>";
-
-  try {
-    var mlResults = await searchML(query);
-
-    if (mlResults.length > 0) {
-      badge.textContent = mlResults.length + " resultado(s) ML";
-      badge.className = "result-badge green";
-      body.innerHTML = renderMLTable(mlResults);
-    } else {
-      // Fallback to Tavily
-      body.innerHTML = "<div class='step running'><div class='spinner'></div> Sem resultados no ML, buscando na web...</div>";
-      try {
-        var tavilyResults = await searchTavily(query + " mercado livre");
-        if (tavilyResults.length > 0) {
-          badge.textContent = tavilyResults.length + " resultado(s) web";
-          badge.className = "result-badge blue";
-          body.innerHTML = renderTavilyTable(tavilyResults);
-        } else {
-          badge.textContent = "0 resultados";
-          badge.className = "result-badge";
-          body.innerHTML = "<div class='no-results'>Nenhum resultado encontrado no ML ou na web.</div>";
-        }
-      } catch(e2) {
-        badge.textContent = "0 resultados ML";
-        badge.className = "result-badge";
-        body.innerHTML = "<div class='no-results'>Sem resultados no Mercado Livre.</div>";
-      }
-    }
-  } catch(e) {
-    badge.textContent = "erro";
-    badge.className = "result-badge";
-    body.innerHTML = "<div class='step error'>❌ " + e.message + "</div>";
-  }
+  if (!res.ok) throw new Error(data.error ? data.error.message : "Groq error");
+  var raw = data.choices[0].message.content;
+  return JSON.parse(raw.replace(/```json|```/g, "").trim());
 }
 
 async function runSearch() {
-  var pn = document.getElementById("inputPN").value.trim();
-  var desc = document.getElementById("inputDesc").value.trim();
-
-  if (!pn && !desc) {
-    alert("Informe o Part Number ou a Descrição.");
-    return;
-  }
+  var pn = document.getElementById("inputPN").value.trim().toUpperCase();
+  if (!pn) { alert("Digite um Part Number."); return; }
 
   document.getElementById("btnSearch").disabled = true;
+  document.getElementById("progress").style.display = "flex";
+  document.getElementById("resultWrap").style.display = "none";
 
-  // Hide sections initially
-  document.getElementById("sectionPN").style.display = "none";
-  document.getElementById("sectionDesc").style.display = "none";
+  setStep("step1", "running", "Buscando informações da peça na web...");
+  setStep("step2", "running", "Aguardando análise...");
+  setStep("step3", "running", "Aguardando anúncios...");
 
-  var promises = [];
-  if (pn) promises.push(doSearch(pn, "sectionPN", "titlePN", "badgePN", "bodyPN"));
-  if (desc) promises.push(doSearch(desc, "sectionDesc", "titleDesc", "badgeDesc", "bodyDesc"));
+  var tavilyData = null, analysisData = null, mlResults = [];
 
-  await Promise.all(promises);
+  // STEP 1: Tavily search for part info
+  try {
+    tavilyData = await searchTavily(
+      "peça moto part number " + pn + " especificações dimensões compatibilidade mercado livre",
+      6
+    );
+    setStep("step1", "done", "Informações da peça encontradas na web");
+  } catch(e) {
+    setStep("step1", "warn", "Busca web limitada: " + e.message);
+    tavilyData = { results: [], answer: "" };
+  }
+
+  // STEP 2: Groq analysis
+  try {
+    var webContext = "";
+    if (tavilyData.answer) webContext += "Resposta resumida: " + tavilyData.answer + "\n\n";
+    if (tavilyData.results && tavilyData.results.length > 0) {
+      webContext += "Resultados encontrados:\n";
+      tavilyData.results.slice(0, 5).forEach(function(r, i) {
+        webContext += (i+1) + ". " + r.title + "\n" + (r.content || "").substring(0, 200) + "\n\n";
+      });
+    }
+
+    var systemMsg = "Você é um especialista em peças de motocicletas para o Mercado Livre Brasil. " +
+      "Use APENAS as informações fornecidas pelo contexto web para preencher os campos. " +
+      "Se não encontrar uma informação, estime com base no tipo de peça. " +
+      "Responda SOMENTE com JSON válido, sem markdown.";
+
+    var userMsg = [
+      "Part Number pesquisado: " + pn,
+      "",
+      "Contexto encontrado na web:",
+      webContext || "Nenhuma informação encontrada. Estime com base no Part Number.",
+      "",
+      "Retorne JSON com exatamente esta estrutura:",
+      '{',
+      '  "nome_peca": "nome completo da peça identificada",',
+      '  "titulo_anuncio": "título otimizado para ML com min 60 chars, contendo ' + pn + ', modelos compatíveis e diferencial",',
+      '  "dimensoes": { "comprimento_cm": 0, "largura_cm": 0, "altura_cm": 0, "peso_kg": 0 },',
+      '  "part_numbers_compativeis": [{ "codigo": "string", "tipo": "original", "marca": "string" }],',
+      '  "termos_busca_ml": ["termo1", "termo2", "termo3"],',
+      '  "confianca": "alta ou media ou baixa"',
+      '}'
+    ].join("\n");
+
+    analysisData = await callGroq(systemMsg, userMsg);
+    setStep("step2", "done", "Análise concluída — " + (analysisData.nome_peca || pn) + " (" + (analysisData.confianca || "?") + " confiança)");
+  } catch(e) {
+    setStep("step2", "warn", "Análise parcial: " + e.message);
+    analysisData = {
+      nome_peca: pn,
+      titulo_anuncio: pn + " — Peça de Motocicleta Original",
+      dimensoes: { comprimento_cm: 20, largura_cm: 15, altura_cm: 10, peso_kg: 0.5 },
+      part_numbers_compativeis: [{ codigo: pn, tipo: "original", marca: "—" }],
+      termos_busca_ml: [pn],
+      confianca: "baixa"
+    };
+  }
+
+  // STEP 3: ML search — try PN first, then AI-suggested terms, then web fallback
+  try {
+    mlResults = await searchML(pn);
+
+    if (mlResults.length === 0 && analysisData.termos_busca_ml) {
+      for (var i = 0; i < analysisData.termos_busca_ml.length; i++) {
+        var termo = analysisData.termos_busca_ml[i];
+        mlResults = await searchML(termo);
+        if (mlResults.length > 0) break;
+      }
+    }
+
+    if (mlResults.length === 0) {
+      // Fallback: Tavily ML-specific search
+      var mlTavily = await searchTavily(pn + " " + (analysisData.nome_peca || "") + " mercado livre comprar", 8);
+      setStep("step3", "warn", "Sem resultados diretos no ML — exibindo resultados da web");
+      renderResults(analysisData, [], mlTavily.results || []);
+    } else {
+      setStep("step3", "done", mlResults.length + " anúncio(s) encontrado(s) no Mercado Livre");
+      renderResults(analysisData, mlResults, []);
+    }
+  } catch(e) {
+    setStep("step3", "error", "Erro na busca: " + e.message);
+    renderResults(analysisData, [], []);
+  }
+
   document.getElementById("btnSearch").disabled = false;
 }
 
-["inputPN","inputDesc"].forEach(function(id) {
-  document.getElementById(id).addEventListener("keydown", function(e) {
-    if (e.key === "Enter") runSearch();
+function renderResults(analysis, mlAds, webAds) {
+  // Título
+  var titulo = analysis.titulo_anuncio || "";
+  document.getElementById("tituloBox").textContent = titulo;
+  document.getElementById("charCount").textContent = titulo.length + " caracteres";
+  document.getElementById("badgeTitulo").textContent = analysis.confianca === "alta" ? "✓ Alta confiança" : analysis.confianca === "media" ? "~ Média confiança" : "⚠ Baixa confiança";
+  document.getElementById("badgeTitulo").className = "card-badge " + (analysis.confianca === "alta" ? "green" : analysis.confianca === "media" ? "yellow" : "");
+
+  // Dimensões
+  var dims = analysis.dimensoes || {};
+  var dimsHtml = [
+    { label: "Comprimento", value: (dims.comprimento_cm || "—") + " cm" },
+    { label: "Largura", value: (dims.largura_cm || "—") + " cm" },
+    { label: "Altura", value: (dims.altura_cm || "—") + " cm" },
+    { label: "Peso", value: (dims.peso_kg || "—") + " kg" }
+  ].map(function(d) {
+    return "<div class='dim-chip'><div class='dim-label'>" + d.label + "</div><div class='dim-value'>" + d.value + "</div></div>";
+  }).join("");
+  document.getElementById("dimsRow").innerHTML = dimsHtml;
+
+  // Part Numbers
+  var pns = analysis.part_numbers_compativeis || [];
+  document.getElementById("badgePNs").textContent = pns.length + " código(s)";
+  document.getElementById("pnGrid").innerHTML = pns.map(function(p) {
+    return "<span class='pn-tag " + (p.tipo || "") + "' title='" + p.marca + "'>" + p.codigo + " <span style='opacity:0.5;font-size:9px'>" + p.marca + "</span></span>";
+  }).join("") || "<span style='color:#444;font-size:12px'>Nenhum encontrado</span>";
+
+  // Anúncios
+  var tbody = document.getElementById("adsBody");
+  if (mlAds.length > 0) {
+    document.getElementById("badgeAds").textContent = mlAds.length + " anúncio(s)";
+    document.getElementById("badgeAds").className = "card-badge green";
+    tbody.innerHTML = mlAds.map(function(a, i) {
+      var cond = a.condition === "new" ? "novo" : "usado";
+      var preco = Number(a.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+      var titulo = a.title || "—";
+      var seller = a.seller && a.seller.nickname ? a.seller.nickname : "—";
+      return "<tr>" +
+        "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
+        "<td><div class='ad-title' title='" + titulo.replace(/'/g,"") + "'>" + titulo + "</div></td>" +
+        "<td class='price'>R$ " + preco + "</td>" +
+        "<td><span class='badge " + cond + "'>" + cond + "</span></td>" +
+        "<td style='font-size:10px;color:#555;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>" + seller + "</td>" +
+        "<td><a class='ad-link' href='" + (a.permalink||"#") + "' target='_blank'>Ver ↗</a></td>" +
+        "</tr>";
+    }).join("");
+
+    // Price summary
+    var prices = mlAds.map(function(a) { return Number(a.price); }).filter(function(p) { return p > 0; });
+    if (prices.length > 0) {
+      var min = Math.min.apply(null, prices);
+      var max = Math.max.apply(null, prices);
+      var avg = prices.reduce(function(a,b){return a+b;},0) / prices.length;
+      document.getElementById("priceSummary").innerHTML =
+        "<div class='price-summary'>" +
+        "<div class='price-chip'><div class='price-chip-label'>Menor preço</div><div class='price-chip-value'>R$ " + min.toLocaleString("pt-BR",{minimumFractionDigits:2}) + "</div></div>" +
+        "<div class='price-chip'><div class='price-chip-label'>Preço médio</div><div class='price-chip-value'>R$ " + avg.toLocaleString("pt-BR",{minimumFractionDigits:2}) + "</div></div>" +
+        "<div class='price-chip'><div class='price-chip-label'>Maior preço</div><div class='price-chip-value'>R$ " + max.toLocaleString("pt-BR",{minimumFractionDigits:2}) + "</div></div>" +
+        "<div class='price-chip'><div class='price-chip-label'>Anúncios</div><div class='price-chip-value'>" + mlAds.length + "</div></div>" +
+        "</div>";
+    }
+  } else if (webAds.length > 0) {
+    document.getElementById("badgeAds").textContent = webAds.length + " resultado(s) web";
+    document.getElementById("badgeAds").className = "card-badge blue";
+    tbody.innerHTML = webAds.map(function(a, i) {
+      var titulo = a.title || "—";
+      var snippet = a.content ? a.content.substring(0,100)+"..." : "";
+      return "<tr>" +
+        "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
+        "<td colspan='3'><div class='ad-title' style='max-width:400px' title='" + titulo.replace(/'/g,"") + "'>" + titulo + "</div>" +
+        "<div style='font-size:10px;color:#444;margin-top:2px'>" + snippet + "</div></td>" +
+        "<td colspan='2'><a class='ad-link' href='" + (a.url||"#") + "' target='_blank'>Ver ↗</a></td>" +
+        "</tr>";
+    }).join("");
+  } else {
+    document.getElementById("badgeAds").textContent = "0 resultados";
+    tbody.innerHTML = "<tr><td colspan='6' class='no-results'>Nenhum anúncio encontrado.</td></tr>";
+  }
+
+  document.getElementById("resultWrap").style.display = "flex";
+}
+
+function copyTitulo() {
+  var t = document.getElementById("tituloBox").textContent;
+  navigator.clipboard.writeText(t).then(function() {
+    var btn = document.querySelector(".copy-btn");
+    btn.textContent = "✓ Copiado!";
+    setTimeout(function() { btn.textContent = "Copiar"; }, 1500);
   });
+}
+
+document.getElementById("inputPN").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") runSearch();
 });
 </script>
 </body>
