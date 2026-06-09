@@ -10,18 +10,26 @@
 
   .header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid #2a2a2e; padding-bottom: 16px; }
   .logo-box { background: #f5c518; color: #0d0d0f; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.08em; padding: 5px 9px; border-radius: 4px; }
-  .header-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #e8e4dc; }
+  .header-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
   .header-sub { font-size: 11px; color: #444; margin-left: auto; font-family: 'DM Mono', monospace; }
+
+  .auth-bar { display: flex; align-items: center; gap: 10px; background: #18181c; border: 1px solid #2e2e34; border-radius: 8px; padding: 10px 16px; margin-bottom: 20px; font-size: 12px; }
+  .auth-status { font-family: 'DM Mono', monospace; font-size: 11px; }
+  .auth-status.connected { color: #6ecf80; }
+  .auth-status.disconnected { color: #ff8080; }
+  .btn-connect { background: #f5c518; color: #0d0d0f; border: none; border-radius: 6px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+  .btn-connect:hover { background: #ffd740; }
+  .btn-disconnect { background: none; border: 1px solid #3a3a3a; color: #666; border-radius: 6px; font-size: 11px; padding: 6px 12px; cursor: pointer; }
+  .btn-disconnect:hover { border-color: #ff8080; color: #ff8080; }
 
   .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
   .search-input { flex: 1; background: #18181c; border: 1px solid #2e2e34; border-radius: 8px; color: #e8e4dc; font-family: 'DM Mono', monospace; font-size: 15px; padding: 13px 16px; outline: none; transition: border-color 0.2s; letter-spacing: 0.05em; }
   .search-input:focus { border-color: #f5c518; }
   .search-input::placeholder { color: #3a3a42; font-size: 13px; }
-  .btn-search { background: #f5c518; color: #0d0d0f; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; padding: 13px 24px; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+  .btn-search { background: #f5c518; color: #0d0d0f; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; padding: 13px 24px; cursor: pointer; white-space: nowrap; }
   .btn-search:hover { background: #ffd740; }
   .btn-search:disabled { background: #3a3a3a; color: #666; cursor: not-allowed; }
 
-  /* Progress */
   .progress { display: none; flex-direction: column; gap: 6px; margin-bottom: 20px; }
   .pstep { display: flex; align-items: center; gap: 10px; background: #18181c; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; font-family: 'DM Mono', monospace; font-size: 11px; color: #555; transition: all 0.2s; }
   .pstep.running { border-color: #f5c518; color: #f5c518; }
@@ -31,9 +39,7 @@
   .spinner { width: 12px; height: 12px; border: 2px solid #333; border-top-color: #f5c518; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Result layout */
   .result-wrap { display: none; flex-direction: column; gap: 16px; }
-
   .card { background: #18181c; border: 1px solid #2e2e34; border-radius: 10px; overflow: hidden; }
   .card-header { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1px solid #2e2e34; background: #1e1e24; }
   .card-icon { font-size: 14px; }
@@ -44,26 +50,22 @@
   .card-badge.blue { border-color: #1a3a6a; color: #6ab0ff; }
   .card-body { padding: 16px; }
 
-  /* Título */
   .title-box { background: #0d0d0f; border: 1px solid #f5c518; border-radius: 6px; padding: 12px 14px; font-family: 'DM Mono', monospace; font-size: 13px; color: #f5c518; line-height: 1.5; margin-bottom: 8px; }
   .char-row { display: flex; align-items: center; gap: 12px; }
   .char-count { font-size: 10px; color: #555; font-family: 'DM Mono', monospace; }
   .copy-btn { background: none; border: 1px solid #2e2e34; color: #555; border-radius: 4px; padding: 3px 8px; font-size: 10px; cursor: pointer; transition: all 0.15s; }
   .copy-btn:hover { border-color: #f5c518; color: #f5c518; }
 
-  /* Dimensões */
   .dims-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .dim-chip { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; text-align: center; min-width: 75px; }
   .dim-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
   .dim-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: #e8e4dc; }
 
-  /* Part numbers */
   .pn-grid { display: flex; flex-wrap: wrap; gap: 7px; }
   .pn-tag { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 4px 10px; font-family: 'DM Mono', monospace; font-size: 11px; color: #b0c4ff; }
   .pn-tag.original { border-color: #3a8c4a; color: #6ecf80; }
   .pn-tag.aftermarket { border-color: #5a4a8c; color: #a88cff; }
 
-  /* Tabela anúncios */
   .ads-table { width: 100%; border-collapse: collapse; }
   .ads-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #444; padding: 8px 12px; border-bottom: 1px solid #2e2e34; text-align: left; }
   .ads-table td { padding: 9px 12px; border-bottom: 1px solid #1c1c22; font-size: 11px; color: #ccc; vertical-align: middle; }
@@ -78,14 +80,10 @@
   .ad-link:hover { color: #f5c518; }
   .no-results { padding: 20px; text-align: center; color: #444; font-size: 13px; font-style: italic; }
 
-  /* Price summary */
   .price-summary { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid #2e2e34; }
   .price-chip { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; text-align: center; flex: 1; min-width: 90px; }
   .price-chip-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
   .price-chip-value { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #f5c518; }
-
-  .info-text { font-size: 12px; color: #555; line-height: 1.6; }
-  .disclaimer { font-size: 10px; color: #333; font-style: italic; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -93,11 +91,18 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Peças</div>
-  <div class="header-sub">Sucatão do Major · v4.7</div>
+  <div class="header-sub">Sucatão do Major · v5.0</div>
+</div>
+
+<!-- Auth Bar -->
+<div class="auth-bar" id="authBar">
+  <span id="authStatus" class="auth-status disconnected">⚠ Mercado Livre não conectado</span>
+  <span style="flex:1;font-size:11px;color:#444" id="authInfo"></span>
+  <button class="btn-connect" id="btnConnect" onclick="connectML()">Conectar ao Mercado Livre</button>
 </div>
 
 <div class="search-row">
-  <input class="search-input" id="inputPN" type="text" placeholder="Digite o Part Number — Ex: 33510K1ZJ100" autocomplete="off" spellcheck="false" />
+  <input class="search-input" id="inputPN" type="text" placeholder="Digite o Part Number — Ex: 17555K3HB000" autocomplete="off" spellcheck="false" />
   <button class="btn-search" id="btnSearch" onclick="runSearch()">🔍 Analisar</button>
 </div>
 
@@ -108,54 +113,23 @@
 </div>
 
 <div class="result-wrap" id="resultWrap">
-
-  <!-- Título -->
-  <div class="card" id="cardTitulo">
-    <div class="card-header">
-      <span class="card-icon">📝</span>
-      <span class="card-title">Título Otimizado para Anúncio</span>
-      <span class="card-badge yellow" id="badgeTitulo">—</span>
-    </div>
+  <div class="card">
+    <div class="card-header"><span class="card-icon">📝</span><span class="card-title">Título Otimizado para Anúncio</span><span class="card-badge yellow" id="badgeTitulo">—</span></div>
     <div class="card-body">
       <div class="title-box" id="tituloBox">—</div>
-      <div class="char-row">
-        <span class="char-count" id="charCount">—</span>
-        <button class="copy-btn" onclick="copyTitulo()">Copiar</button>
-      </div>
+      <div class="char-row"><span class="char-count" id="charCount">—</span><button class="copy-btn" onclick="copyTitulo()">Copiar</button></div>
     </div>
   </div>
-
-  <!-- Dimensões -->
-  <div class="card" id="cardDims">
-    <div class="card-header">
-      <span class="card-icon">📦</span>
-      <span class="card-title">Dimensões Estimadas para Frete</span>
-      <span class="card-badge" id="badgeDims">Mercado Envios</span>
-    </div>
-    <div class="card-body">
-      <div class="dims-row" id="dimsRow">—</div>
-    </div>
+  <div class="card">
+    <div class="card-header"><span class="card-icon">📦</span><span class="card-title">Dimensões Estimadas para Frete</span><span class="card-badge" id="badgeDims">Mercado Envios</span></div>
+    <div class="card-body"><div class="dims-row" id="dimsRow"></div></div>
   </div>
-
-  <!-- Part Numbers -->
-  <div class="card" id="cardPNs">
-    <div class="card-header">
-      <span class="card-icon">🔗</span>
-      <span class="card-title">Part Numbers Compatíveis</span>
-      <span class="card-badge" id="badgePNs">—</span>
-    </div>
-    <div class="card-body">
-      <div class="pn-grid" id="pnGrid">—</div>
-    </div>
+  <div class="card">
+    <div class="card-header"><span class="card-icon">🔗</span><span class="card-title">Part Numbers Compatíveis</span><span class="card-badge" id="badgePNs">—</span></div>
+    <div class="card-body"><div class="pn-grid" id="pnGrid"></div></div>
   </div>
-
-  <!-- Anúncios ML -->
-  <div class="card" id="cardAds">
-    <div class="card-header">
-      <span class="card-icon">🛒</span>
-      <span class="card-title">Anúncios no Mercado Livre</span>
-      <span class="card-badge" id="badgeAds">—</span>
-    </div>
+  <div class="card">
+    <div class="card-header"><span class="card-icon">🛒</span><span class="card-title">Anúncios no Mercado Livre</span><span class="card-badge" id="badgeAds">—</span></div>
     <div style="overflow-x:auto">
       <table class="ads-table">
         <thead><tr><th>#</th><th>Título</th><th>Preço</th><th>Cond.</th><th>Vendedor</th><th></th></tr></thead>
@@ -164,13 +138,128 @@
     </div>
     <div id="priceSummary"></div>
   </div>
-
 </div>
 
 <script>
-var ML_URL = "/api/ml";
+var ML_CLIENT_ID = "6526893447891816";
+var REDIRECT_URI = "https://merry-bublanina-ee4513.netlify.app/";
 var TAVILY_URL = "/api/tavily";
 var GROQ_URL = "/api/groq";
+var ML_TOKEN_URL = "/api/ml-token";
+var ML_SEARCH_URL = "/api/ml-search";
+
+// Auth state
+var mlToken = localStorage.getItem("ml_access_token") || null;
+var mlRefresh = localStorage.getItem("ml_refresh_token") || null;
+var mlExpiry = parseInt(localStorage.getItem("ml_token_expiry") || "0");
+var mlUser = localStorage.getItem("ml_user") || null;
+
+function updateAuthBar() {
+  var status = document.getElementById("authStatus");
+  var info = document.getElementById("authInfo");
+  var btn = document.getElementById("btnConnect");
+  if (mlToken && Date.now() < mlExpiry) {
+    status.textContent = "✓ Mercado Livre conectado";
+    status.className = "auth-status connected";
+    info.textContent = mlUser ? "Usuário: " + mlUser : "";
+    btn.textContent = "Desconectar";
+    btn.onclick = disconnectML;
+    btn.className = "btn-disconnect";
+  } else {
+    status.textContent = "⚠ Mercado Livre não conectado";
+    status.className = "auth-status disconnected";
+    info.textContent = "Conecte para buscar anúncios autenticados";
+    btn.textContent = "Conectar ao Mercado Livre";
+    btn.onclick = connectML;
+    btn.className = "btn-connect";
+    mlToken = null;
+  }
+}
+
+function connectML() {
+  var authUrl = "https://auth.mercadolivre.com.br/authorization" +
+    "?response_type=code" +
+    "&client_id=" + ML_CLIENT_ID +
+    "&redirect_uri=" + encodeURIComponent(REDIRECT_URI);
+  window.location.href = authUrl;
+}
+
+function disconnectML() {
+  localStorage.removeItem("ml_access_token");
+  localStorage.removeItem("ml_refresh_token");
+  localStorage.removeItem("ml_token_expiry");
+  localStorage.removeItem("ml_user");
+  mlToken = null; mlRefresh = null; mlExpiry = 0; mlUser = null;
+  updateAuthBar();
+}
+
+async function handleOAuthCallback() {
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get("code");
+  if (!code) return;
+
+  // Clean URL
+  window.history.replaceState({}, document.title, "/");
+
+  try {
+    var res = await fetch(ML_TOKEN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code, grant_type: "authorization_code" })
+    });
+    var data = await res.json();
+    if (data.access_token) {
+      mlToken = data.access_token;
+      mlRefresh = data.refresh_token;
+      mlExpiry = Date.now() + (data.expires_in - 60) * 1000;
+      localStorage.setItem("ml_access_token", mlToken);
+      localStorage.setItem("ml_refresh_token", mlRefresh);
+      localStorage.setItem("ml_token_expiry", mlExpiry);
+
+      // Get user info
+      var userRes = await fetch("https://api.mercadolibre.com/users/me", {
+        headers: { "Authorization": "Bearer " + mlToken }
+      });
+      var userData = await userRes.json();
+      mlUser = userData.nickname || userData.email || "Conectado";
+      localStorage.setItem("ml_user", mlUser);
+      updateAuthBar();
+    }
+  } catch(e) {
+    console.error("OAuth error:", e);
+  }
+}
+
+async function refreshToken() {
+  if (!mlRefresh) return false;
+  try {
+    var res = await fetch(ML_TOKEN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: mlRefresh, grant_type: "refresh_token" })
+    });
+    var data = await res.json();
+    if (data.access_token) {
+      mlToken = data.access_token;
+      mlRefresh = data.refresh_token || mlRefresh;
+      mlExpiry = Date.now() + (data.expires_in - 60) * 1000;
+      localStorage.setItem("ml_access_token", mlToken);
+      localStorage.setItem("ml_refresh_token", mlRefresh);
+      localStorage.setItem("ml_token_expiry", mlExpiry);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+async function getValidToken() {
+  if (mlToken && Date.now() < mlExpiry) return mlToken;
+  if (mlRefresh) {
+    var ok = await refreshToken();
+    if (ok) return mlToken;
+  }
+  return null;
+}
 
 function setStep(id, state, text) {
   var el = document.getElementById(id);
@@ -180,27 +269,21 @@ function setStep(id, state, text) {
 }
 
 async function searchML(query) {
-  var res = await fetch(ML_URL + "?q=" + encodeURIComponent(query) + "&limit=10&site_id=MLB");
+  var token = await getValidToken();
+  var url = ML_SEARCH_URL + "?q=" + encodeURIComponent(query) + (token ? "&token=" + encodeURIComponent(token) : "");
+  var res = await fetch(url);
   if (!res.ok) throw new Error("ML " + res.status);
   var data = await res.json();
   return data.results || [];
 }
 
-// Generate part number variations to maximize ML hits
 function pnVariations(pn) {
-  var vars = [pn];
-  // Try lowercase
-  vars.push(pn.toLowerCase());
-  // Try with hyphens inserted at common Honda/Yamaha positions
-  // e.g. 17555K3HB000 -> 17555-K3H-B000 or 17555-K3H-B00-0
-  var m1 = pn.match(/^(\d{5})([A-Z0-9]{3})([A-Z0-9]+)$/);
-  if (m1) vars.push(m1[1] + "-" + m1[2] + "-" + m1[3]);
-  var m2 = pn.match(/^(\d+)([A-Z]+\d*)([A-Z0-9]+)$/);
-  if (m2) vars.push(m2[1] + "-" + m2[2] + "-" + m2[3]);
-  // Try spaces
-  vars.push(pn.replace(/([A-Z])(\d)/g, "$1 $2").replace(/(\d)([A-Z])/g, "$1 $2"));
-  // Remove duplicates
-  return vars.filter(function(v, i, a) { return a.indexOf(v) === i && v.length > 3; });
+  var vars = [pn, pn.toLowerCase()];
+  var m = pn.match(/^(\d{5})([A-Z]\d[A-Z])([A-Z0-9]+)$/);
+  if (m) vars.push(m[1] + "-" + m[2] + "-" + m[3]);
+  var m2 = pn.match(/^(\d+)([A-Z]+)(\d+)([A-Z]+)(\d+)$/);
+  if (m2) vars.push(m2[1] + "-" + m2[2] + m2[3] + "-" + m2[4] + m2[5]);
+  return vars.filter(function(v,i,a){ return a.indexOf(v)===i; });
 }
 
 async function searchMLWithVariations(pn) {
@@ -239,8 +322,7 @@ async function callGroq(systemMsg, userMsg) {
   });
   var data = await res.json();
   if (!res.ok) throw new Error(data.error ? data.error.message : "Groq error");
-  var raw = data.choices[0].message.content;
-  return JSON.parse(raw.replace(/```json|```/g, "").trim());
+  return JSON.parse(data.choices[0].message.content.replace(/```json|```/g,"").trim());
 }
 
 async function runSearch() {
@@ -250,192 +332,151 @@ async function runSearch() {
   document.getElementById("btnSearch").disabled = true;
   document.getElementById("progress").style.display = "flex";
   document.getElementById("resultWrap").style.display = "none";
+  document.getElementById("priceSummary").innerHTML = "";
 
+  var mlResults = [], tavilyData = null, analysisData = null;
+
+  // STEP 1: ML search
   setStep("step1", "running", "Buscando anúncios no Mercado Livre...");
-  setStep("step2", "running", "Aguardando análise...");
-  setStep("step3", "running", "Aguardando anúncios...");
+  setStep("step2", "running", "Aguardando...");
+  setStep("step3", "running", "Aguardando...");
 
-  var tavilyData = null, analysisData = null, mlResults = [];
-
-  // STEP 1: ML search first — ML titles are the most reliable source
   try {
     var mlSearch = await searchMLWithVariations(pn);
     mlResults = mlSearch.results;
     if (mlResults.length > 0) {
-      setStep("step1", "done", mlResults.length + " anúncio(s) encontrado(s) no Mercado Livre (busca: " + mlSearch.query + ")");
+      setStep("step1", "done", mlResults.length + " anúncio(s) encontrado(s) no ML");
     } else {
       setStep("step1", "warn", "Sem resultados no ML — buscando na web...");
-      tavilyData = await searchTavily("peça moto part number " + pn + " especificações dimensões compatibilidade", 5).catch(function() { return { results: [], answer: "" }; });
+      tavilyData = await searchTavily("peça moto part number " + pn + " especificações compatibilidade", 5).catch(function(){ return {results:[],answer:""}; });
     }
   } catch(e) {
-    setStep("step1", "warn", "Erro na busca ML: " + e.message);
-    tavilyData = { results: [], answer: "" };
+    setStep("step1", "warn", "Erro ML: " + e.message + " — buscando na web...");
+    tavilyData = await searchTavily("peça moto part number " + pn, 5).catch(function(){ return {results:[],answer:""}; });
   }
 
-  // STEP 2: Groq analysis — prefer ML titles as context
+  // STEP 2: Groq analysis
+  setStep("step2", "running", "Analisando peça com IA...");
   try {
-    var webContext = "";
-
-    // Use ML titles as primary context (most reliable)
+    var ctx = "";
     if (mlResults.length > 0) {
-      webContext += "Títulos de anúncios encontrados no Mercado Livre para este part number:\n";
-      mlResults.slice(0, 8).forEach(function(r, i) {
-        webContext += (i+1) + ". " + r.title + " — R$ " + r.price + "\n";
-      });
-      webContext += "\nUSE ESSES TÍTULOS como base para identificar nome da peça, modelos e anos compatíveis.";
+      ctx = "Títulos reais do Mercado Livre para este part number:\n";
+      mlResults.slice(0,8).forEach(function(r,i){ ctx += (i+1)+". "+r.title+" — R$"+r.price+"\n"; });
+      ctx += "\nUse esses títulos para identificar nome, modelos e anos da peça.";
     } else if (tavilyData) {
-      if (tavilyData.answer) webContext += "Resposta resumida: " + tavilyData.answer + "\n\n";
-      if (tavilyData.results && tavilyData.results.length > 0) {
-        webContext += "Resultados encontrados:\n";
-        tavilyData.results.slice(0, 5).forEach(function(r, i) {
-          webContext += (i+1) + ". " + r.title + "\n" + (r.content || "").substring(0, 200) + "\n\n";
-        });
-      }
+      if (tavilyData.answer) ctx += tavilyData.answer + "\n\n";
+      (tavilyData.results||[]).slice(0,4).forEach(function(r,i){ ctx += r.title+"\n"+(r.content||"").substring(0,200)+"\n\n"; });
     }
 
-    var systemMsg = "Você é um especialista em peças de motocicletas e em otimização de anúncios para o Mercado Livre Brasil. " +
-      "Você conhece as melhores práticas de SEO do ML: título deve ter entre 60-120 caracteres, " +
-      "começar com o nome da peça, incluir marca e modelo da moto, incluir os anos de compatibilidade separados por espaço (ex: 2014 2015 2016 2017), " +
-      "incluir o part number e finalizar com Original ou Genuine. Sem barras, pipes ou caracteres especiais. " +
-      "Use as informações da web para preencher os campos com precisão. " +
-      "Se não encontrar uma informação específica, estime com base no tipo de peça. " +
+    var sys = "Você é especialista em peças de moto e SEO para Mercado Livre Brasil. " +
+      "Gere títulos entre 60-120 chars: [Nome Peça] [Marca Moto] [Modelos] [Anos] Original. " +
+      "Anos separados por espaço. Sem barras, pipes ou part number no título. " +
       "Responda SOMENTE com JSON válido, sem markdown.";
 
-    var userMsg = [
-      "Part Number pesquisado: " + pn,
-      "",
-      "Contexto encontrado na web:",
-      webContext || "Nenhuma informação encontrada. Estime com base no Part Number.",
-      "",
-      "Retorne JSON com exatamente esta estrutura:",
-      '{',
-      '  "nome_peca": "nome completo da peça identificada",',
-      '  "titulo_anuncio": "titulo otimizado para ML — REGRAS OBRIGATORIAS: (1) entre 60 e 120 caracteres, (2) formato: [Nome da Peca] [Marca Moto] [Modelo(s)] [Ano(s)] Original, (3) incluir anos de compatibilidade ex: 2014 2015 2016, (4) sem caracteres especiais como / ou |, (5) palavras mais importantes no inicio, (6) NAO incluir o part number no titulo",',
-      '  "dimensoes": { "comprimento_cm": 0, "largura_cm": 0, "altura_cm": 0, "peso_kg": 0 },',
-      '  "part_numbers_compativeis": [{ "codigo": "string", "tipo": "original", "marca": "string" }],',
-      '  "termos_busca_ml": ["termo1", "termo2", "termo3"],',
-      '  "confianca": "alta ou media ou baixa"',
-      '}'
-    ].join("\n");
+    var usr = ["Part Number: " + pn, "", "Contexto:", ctx || "Sem contexto disponível.", "",
+      "Retorne JSON:", '{',
+      '"nome_peca":"nome completo da peça",',
+      '"titulo_anuncio":"título otimizado 60-120 chars sem part number",',
+      '"dimensoes":{"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},',
+      '"part_numbers_compativeis":[{"codigo":"string","tipo":"original","marca":"string"}],',
+      '"termos_busca_ml":["termo1","termo2","termo3"],',
+      '"confianca":"alta ou media ou baixa"',
+      '}'].join("\n");
 
-    analysisData = await callGroq(systemMsg, userMsg);
-    setStep("step2", "done", "Análise concluída — " + (analysisData.nome_peca || pn) + " (" + (analysisData.confianca || "?") + " confiança)");
+    analysisData = await callGroq(sys, usr);
+    setStep("step2", "done", "Análise: " + (analysisData.nome_peca||pn) + " (" + (analysisData.confianca||"?") + " confiança)");
   } catch(e) {
     setStep("step2", "warn", "Análise parcial: " + e.message);
-    analysisData = {
-      nome_peca: pn,
-      titulo_anuncio: pn + " — Peça de Motocicleta Original",
-      dimensoes: { comprimento_cm: 20, largura_cm: 15, altura_cm: 10, peso_kg: 0.5 },
-      part_numbers_compativeis: [{ codigo: pn, tipo: "original", marca: "—" }],
-      termos_busca_ml: [pn],
-      confianca: "baixa"
-    };
+    analysisData = { nome_peca: pn, titulo_anuncio: pn, dimensoes: {comprimento_cm:20,largura_cm:15,altura_cm:10,peso_kg:0.5}, part_numbers_compativeis:[{codigo:pn,tipo:"original",marca:"—"}], termos_busca_ml:[pn], confianca:"baixa" };
   }
 
-  // STEP 3: ML already searched in step 1 — if no results try AI-suggested terms or Tavily
+  // STEP 3: fallback search if ML was empty
+  setStep("step3", "running", "Verificando resultados...");
   try {
     if (mlResults.length === 0 && analysisData.termos_busca_ml) {
       for (var i = 0; i < analysisData.termos_busca_ml.length; i++) {
-        var termo = analysisData.termos_busca_ml[i];
-        var tryResults = await searchML(termo);
-        if (tryResults.length > 0) { mlResults = tryResults; break; }
+        var r = await searchML(analysisData.termos_busca_ml[i]);
+        if (r.length > 0) { mlResults = r; break; }
       }
     }
-    // Last resort: search by identified part name
     if (mlResults.length === 0 && analysisData.nome_peca && analysisData.nome_peca !== pn) {
-      var nameResults = await searchML(analysisData.nome_peca);
-      if (nameResults.length > 0) mlResults = nameResults;
+      var r2 = await searchML(analysisData.nome_peca);
+      if (r2.length > 0) mlResults = r2;
     }
-
-    if (mlResults.length === 0) {
-      var mlTavily = await searchTavily(pn + " " + (analysisData.nome_peca || "") + " mercado livre comprar", 8);
-      setStep("step3", "warn", "Sem resultados diretos no ML — exibindo resultados da web");
-      renderResults(analysisData, [], mlTavily.results || []);
+    if (mlResults.length > 0) {
+      setStep("step3", "done", mlResults.length + " anúncio(s) prontos");
     } else {
-      setStep("step3", "done", mlResults.length + " anúncio(s) encontrado(s) no Mercado Livre");
-      renderResults(analysisData, mlResults, []);
+      var mlTavily = await searchTavily(pn + " " + (analysisData.nome_peca||"") + " mercado livre", 8);
+      setStep("step3", "warn", "Exibindo resultados da web");
+      renderResults(analysisData, [], mlTavily.results||[]);
+      document.getElementById("btnSearch").disabled = false;
+      return;
     }
   } catch(e) {
-    setStep("step3", "error", "Erro na busca: " + e.message);
-    renderResults(analysisData, [], []);
+    setStep("step3", "error", "Erro: " + e.message);
   }
 
+  renderResults(analysisData, mlResults, []);
   document.getElementById("btnSearch").disabled = false;
 }
 
 function renderResults(analysis, mlAds, webAds) {
-  // Título
   var titulo = analysis.titulo_anuncio || "";
   document.getElementById("tituloBox").textContent = titulo;
   document.getElementById("charCount").textContent = titulo.length + " caracteres";
-  document.getElementById("badgeTitulo").textContent = analysis.confianca === "alta" ? "✓ Alta confiança" : analysis.confianca === "media" ? "~ Média confiança" : "⚠ Baixa confiança";
-  document.getElementById("badgeTitulo").className = "card-badge " + (analysis.confianca === "alta" ? "green" : analysis.confianca === "media" ? "yellow" : "");
+  var conf = analysis.confianca;
+  document.getElementById("badgeTitulo").textContent = conf === "alta" ? "✓ Alta confiança" : conf === "media" ? "~ Média confiança" : "⚠ Baixa confiança";
+  document.getElementById("badgeTitulo").className = "card-badge " + (conf === "alta" ? "green" : conf === "media" ? "yellow" : "");
 
-  // Dimensões
   var dims = analysis.dimensoes || {};
-  var dimsHtml = [
-    { label: "Comprimento", value: (dims.comprimento_cm || "—") + " cm" },
-    { label: "Largura", value: (dims.largura_cm || "—") + " cm" },
-    { label: "Altura", value: (dims.altura_cm || "—") + " cm" },
-    { label: "Peso", value: (dims.peso_kg || "—") + " kg" }
-  ].map(function(d) {
-    return "<div class='dim-chip'><div class='dim-label'>" + d.label + "</div><div class='dim-value'>" + d.value + "</div></div>";
-  }).join("");
-  document.getElementById("dimsRow").innerHTML = dimsHtml;
+  document.getElementById("dimsRow").innerHTML = [
+    {label:"Comprimento",value:(dims.comprimento_cm||"—")+" cm"},
+    {label:"Largura",value:(dims.largura_cm||"—")+" cm"},
+    {label:"Altura",value:(dims.altura_cm||"—")+" cm"},
+    {label:"Peso",value:(dims.peso_kg||"—")+" kg"}
+  ].map(function(d){ return "<div class='dim-chip'><div class='dim-label'>"+d.label+"</div><div class='dim-value'>"+d.value+"</div></div>"; }).join("");
 
-  // Part Numbers
   var pns = analysis.part_numbers_compativeis || [];
   document.getElementById("badgePNs").textContent = pns.length + " código(s)";
-  document.getElementById("pnGrid").innerHTML = pns.map(function(p) {
-    return "<span class='pn-tag " + (p.tipo || "") + "' title='" + p.marca + "'>" + p.codigo + " <span style='opacity:0.5;font-size:9px'>" + p.marca + "</span></span>";
+  document.getElementById("pnGrid").innerHTML = pns.map(function(p){
+    return "<span class='pn-tag "+(p.tipo||")+"' title='"+p.marca+"'>"+p.codigo+" <span style='opacity:0.5;font-size:9px'>"+p.marca+"</span></span>";
   }).join("") || "<span style='color:#444;font-size:12px'>Nenhum encontrado</span>";
 
-  // Anúncios
   var tbody = document.getElementById("adsBody");
   if (mlAds.length > 0) {
     document.getElementById("badgeAds").textContent = mlAds.length + " anúncio(s)";
     document.getElementById("badgeAds").className = "card-badge green";
-    tbody.innerHTML = mlAds.map(function(a, i) {
-      var cond = a.condition === "new" ? "novo" : "usado";
-      var preco = Number(a.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
-      var titulo = a.title || "—";
-      var seller = a.seller && a.seller.nickname ? a.seller.nickname : "—";
-      return "<tr>" +
-        "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
-        "<td><div class='ad-title' title='" + titulo.replace(/'/g,"") + "'>" + titulo + "</div></td>" +
-        "<td class='price'>R$ " + preco + "</td>" +
-        "<td><span class='badge " + cond + "'>" + cond + "</span></td>" +
-        "<td style='font-size:10px;color:#555;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>" + seller + "</td>" +
-        "<td><a class='ad-link' href='" + (a.permalink||"#") + "' target='_blank'>Ver ↗</a></td>" +
-        "</tr>";
+    tbody.innerHTML = mlAds.map(function(a,i){
+      var cond = a.condition==="new"?"novo":"usado";
+      var preco = Number(a.price).toLocaleString("pt-BR",{minimumFractionDigits:2});
+      var titulo = a.title||"—";
+      var seller = a.seller&&a.seller.nickname?a.seller.nickname:"—";
+      return "<tr><td style='color:#444;font-size:10px;font-family:monospace'>"+String(i+1).padStart(2,"0")+"</td>"+
+        "<td><div class='ad-title' title='"+titulo.replace(/'/g,"")+"'>"+titulo+"</div></td>"+
+        "<td class='price'>R$ "+preco+"</td>"+
+        "<td><span class='badge "+cond+"'>"+cond+"</span></td>"+
+        "<td style='font-size:10px;color:#555;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>"+seller+"</td>"+
+        "<td><a class='ad-link' href='"+(a.permalink||"#")+"' target='_blank'>Ver ↗</a></td></tr>";
     }).join("");
-
-    // Price summary
-    var prices = mlAds.map(function(a) { return Number(a.price); }).filter(function(p) { return p > 0; });
+    var prices = mlAds.map(function(a){return Number(a.price);}).filter(function(p){return p>0;});
     if (prices.length > 0) {
-      var min = Math.min.apply(null, prices);
-      var max = Math.max.apply(null, prices);
-      var avg = prices.reduce(function(a,b){return a+b;},0) / prices.length;
+      var min=Math.min.apply(null,prices), max=Math.max.apply(null,prices), avg=prices.reduce(function(a,b){return a+b;},0)/prices.length;
       document.getElementById("priceSummary").innerHTML =
-        "<div class='price-summary'>" +
-        "<div class='price-chip'><div class='price-chip-label'>Menor preço</div><div class='price-chip-value'>R$ " + min.toLocaleString("pt-BR",{minimumFractionDigits:2}) + "</div></div>" +
-        "<div class='price-chip'><div class='price-chip-label'>Preço médio</div><div class='price-chip-value'>R$ " + avg.toLocaleString("pt-BR",{minimumFractionDigits:2}) + "</div></div>" +
-        "<div class='price-chip'><div class='price-chip-label'>Maior preço</div><div class='price-chip-value'>R$ " + max.toLocaleString("pt-BR",{minimumFractionDigits:2}) + "</div></div>" +
-        "<div class='price-chip'><div class='price-chip-label'>Anúncios</div><div class='price-chip-value'>" + mlAds.length + "</div></div>" +
+        "<div class='price-summary'>"+
+        "<div class='price-chip'><div class='price-chip-label'>Menor preço</div><div class='price-chip-value'>R$ "+min.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
+        "<div class='price-chip'><div class='price-chip-label'>Preço médio</div><div class='price-chip-value'>R$ "+avg.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
+        "<div class='price-chip'><div class='price-chip-label'>Maior preço</div><div class='price-chip-value'>R$ "+max.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
+        "<div class='price-chip'><div class='price-chip-label'>Anúncios</div><div class='price-chip-value'>"+mlAds.length+"</div></div>"+
         "</div>";
     }
   } else if (webAds.length > 0) {
     document.getElementById("badgeAds").textContent = webAds.length + " resultado(s) web";
     document.getElementById("badgeAds").className = "card-badge blue";
-    tbody.innerHTML = webAds.map(function(a, i) {
-      var titulo = a.title || "—";
-      var snippet = a.content ? a.content.substring(0,100)+"..." : "";
-      return "<tr>" +
-        "<td style='color:#444;font-size:10px;font-family:monospace'>" + String(i+1).padStart(2,"0") + "</td>" +
-        "<td colspan='3'><div class='ad-title' style='max-width:400px' title='" + titulo.replace(/'/g,"") + "'>" + titulo + "</div>" +
-        "<div style='font-size:10px;color:#444;margin-top:2px'>" + snippet + "</div></td>" +
-        "<td colspan='2'><a class='ad-link' href='" + (a.url||"#") + "' target='_blank'>Ver ↗</a></td>" +
-        "</tr>";
+    tbody.innerHTML = webAds.map(function(a,i){
+      return "<tr><td style='color:#444;font-size:10px;font-family:monospace'>"+String(i+1).padStart(2,"0")+"</td>"+
+        "<td colspan='3'><div class='ad-title' style='max-width:400px'>"+( a.title||"—")+"</div>"+
+        "<div style='font-size:10px;color:#444;margin-top:2px'>"+(a.content||"").substring(0,100)+"...</div></td>"+
+        "<td colspan='2'><a class='ad-link' href='"+(a.url||"#")+"' target='_blank'>Ver ↗</a></td></tr>";
     }).join("");
   } else {
     document.getElementById("badgeAds").textContent = "0 resultados";
@@ -446,17 +487,18 @@ function renderResults(analysis, mlAds, webAds) {
 }
 
 function copyTitulo() {
-  var t = document.getElementById("tituloBox").textContent;
-  navigator.clipboard.writeText(t).then(function() {
+  navigator.clipboard.writeText(document.getElementById("tituloBox").textContent).then(function(){
     var btn = document.querySelector(".copy-btn");
     btn.textContent = "✓ Copiado!";
-    setTimeout(function() { btn.textContent = "Copiar"; }, 1500);
+    setTimeout(function(){ btn.textContent = "Copiar"; }, 1500);
   });
 }
 
-document.getElementById("inputPN").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") runSearch();
-});
+document.getElementById("inputPN").addEventListener("keydown", function(e){ if(e.key==="Enter") runSearch(); });
+
+// Init
+handleOAuthCallback();
+updateAuthBar();
 </script>
 </body>
 </html>
