@@ -361,21 +361,28 @@ function setStep(id, state, text) {
 
 // ─── ML Search ────────────────────────────────────────────────────────────
 
-// ML busca via proxy Vercel (ML API bloqueia CORS do browser)
+// ML busca via proxy Vercel (busca pública, sem token)
 async function searchML(query) {
-  var token = await getValidToken();
-  var url = ML_SEARCH_URL + "?q=" + encodeURIComponent(query) + (token ? "&token=" + encodeURIComponent(token) : "");
   try {
+    var url = ML_SEARCH_URL + "?q=" + encodeURIComponent(query);
     var res = await fetch(url);
-    if (!res.ok) throw new Error("ML proxy " + res.status);
-    return (await res.json()).results || [];
-  } catch(e) { console.error("ML search:", e); return []; }
+    if (!res.ok) { console.error("ML proxy status:", res.status); return []; }
+    var data = await res.json();
+    return data.results || [];
+  } catch(e) { console.error("ML search error:", e); return []; }
 }
 
 function pnVariations(pn) {
   var vars = [pn, pn.toLowerCase()];
+  // Formato com hífen: 17555K3HB000 → 17555-K3H-B000
   var m = pn.match(/^(\d{5})([A-Z]\d[A-Z])([A-Z0-9]+)$/);
-  if (m) vars.push(m[1]+"-"+m[2]+"-"+m[3]);
+  if (m) {
+    vars.push(m[1]+"-"+m[2]+"-"+m[3]);
+    vars.push(m[1].toLowerCase()+"-"+m[2].toLowerCase()+"-"+m[3].toLowerCase());
+    // Sem o sufixo de cor: 17555-K3H
+    vars.push(m[1]+"-"+m[2]);
+    vars.push(m[1]+m[2]); // 17555K3H
+  }
   var m2 = pn.match(/^(\d+)([A-Z]+)(\d+)([A-Z]+)(\d+)$/);
   if (m2) vars.push(m2[1]+"-"+m2[2]+m2[3]+"-"+m2[4]+m2[5]);
   return vars.filter(function(v,i,a){ return a.indexOf(v)===i; });
