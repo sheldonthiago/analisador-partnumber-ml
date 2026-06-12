@@ -18,14 +18,17 @@
   var params = new URLSearchParams(window.location.search);
   var code = params.get('code');
   var error = params.get('error');
+  // GitHub Pages needs the full repo path prefix; Vercel/Netlify use /
+  var isGitHubPages = window.location.hostname === 'sheldonthiago.github.io';
+  var homeURL = isGitHubPages ? '/analisador-partnumber-ml/' : '/';
   if (code) {
     localStorage.setItem('ml_oauth_code', code);
-    window.location.href = '/';
+    window.location.href = homeURL;
   } else if (error) {
     localStorage.setItem('ml_oauth_error', error);
-    window.location.href = '/';
+    window.location.href = homeURL;
   } else {
-    window.location.href = '/';
+    window.location.href = homeURL;
   }
 </script>
 </body>
