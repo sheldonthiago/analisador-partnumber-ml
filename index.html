@@ -400,11 +400,15 @@ async function searchTavily(query, max) {
 
 // ─── AI calls ────────────────────────────────────────────────────────────
 
-var AI_PROMPT_SYS = "Você é especialista em peças de moto e SEO para Mercado Livre Brasil. " +
-  "IMPORTANTE: o título deve ter ENTRE 60 E 120 CARACTERES, incluir o nome da peça, marca, modelos e anos (ex: Honda CG 160 Fan Titan 2015 2016 2017 2018 Original). " +
-  "Sem barras, pipes ou part number no título. Anos separados por espaço. " +
-  "Para compatibilidade liste cada modelo/versão separado com anos específicos (não intervalos). " +
-  "Para dimensões: estime separadamente as dimensões da peça sem embalagem E as dimensões com embalagem para envio. " +
+var AI_PROMPT_SYS = "Você é especialista em peças originais de moto Honda/Yamaha/Suzuki e SEO para Mercado Livre Brasil. " +
+  "REGRA CRÍTICA: o título_anuncio deve ter OBRIGATORIAMENTE entre 60 e 120 caracteres. NUNCA menos que 60. " +
+  "Inclua: nome da peça + marca + modelos exatos + anos + 'Original'. " +
+  "Exemplo: 'Carenagem Lateral Esquerda Honda XRE 300 Adventure 2016 2017 2018 2019 Original'. " +
+  "Se não tiver certeza do modelo, use os termos da pesquisa web para inferir. " +
+  "NUNCA invente modelo — se incerto, use 'Honda Original' e o nome da peça com mais detalhes. " +
+  "Anos separados por espaço, sem barras ou pipes. " +
+  "Para compatibilidade: liste modelos exatos com anos específicos. " +
+  "Para dimensões: estime separadamente embalagem (com folga para envio) e peça (sem embalagem). " +
   "Responda SOMENTE com JSON válido, sem markdown.";
 
 function buildUserMsg(pn, ctx) {
@@ -600,10 +604,12 @@ async function runSearch() {
   // STEP 2: Google/Tavily web search
   setStep("step2","running","Pesquisando compatibilidade na web (Google)...");
   try {
-    var queries = [];
-    if (mlResults.length === 0) queries.push("peça moto part number " + pn + " compatibilidade anos modelos especificações");
-    else queries.push(pn + " compatibilidade moto anos modelos original");
-    tavilyData = await searchTavily(queries[0], 6);
+    // Formato com hífen para melhor resultado em buscas Honda
+    var pnHifen = pnUpper.replace(/^(\d{5})([A-Z0-9]{3})([A-Z0-9]+)$/, "$1-$2-$3");
+    var q = mlResults.length === 0
+      ? "Honda \"" + pnUpper + "\" OR \"" + pnHifen + "\" peça moto compatibilidade modelo ano"
+      : pnUpper + " peça moto compatibilidade anos modelos original";
+    tavilyData = await searchTavily(q, 8);
     setStep("step2","done","Pesquisa web concluída — " + ((tavilyData.results||[]).length) + " fonte(s)");
   } catch(e) {
     setStep("step2","warn","Web search indisponível: " + e.message);
@@ -611,7 +617,7 @@ async function runSearch() {
   }
 
   // STEP 3: Parallel AI analysis (Groq + Gemini + ChatGPT)
-  setStep("step3","running","Consultando Groq · Gemini Flash · ChatGPT em paralelo...");
+  setStep("step3","running","Consultando Groq (análise dupla em paralelo)...");
   try {
     var ctx = buildContext(pn, mlResults, tavilyData);
     var [groqRes, geminiRes] = await Promise.all([
