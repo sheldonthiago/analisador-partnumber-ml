@@ -408,14 +408,14 @@ async function searchTavily(query, max) {
 // ─── AI calls ────────────────────────────────────────────────────────────
 
 var AI_PROMPT_SYS = "Você é especialista em peças originais de moto Honda/Yamaha/Suzuki e SEO para Mercado Livre Brasil. " +
-  "REGRA CRÍTICA: o título_anuncio deve ter OBRIGATORIAMENTE entre 60 e 120 caracteres. NUNCA menos que 60. " +
-  "Inclua: nome da peça + marca + modelos exatos + anos + 'Original'. " +
-  "Exemplo: 'Carenagem Lateral Esquerda Honda XRE 300 Adventure 2016 2017 2018 2019 Original'. " +
-  "Se não tiver certeza do modelo, use os termos da pesquisa web para inferir. " +
-  "NUNCA invente modelo — se incerto, use 'Honda Original' e o nome da peça com mais detalhes. " +
-  "Anos separados por espaço, sem barras ou pipes. " +
-  "Para compatibilidade: liste modelos exatos com anos específicos. " +
-  "Para dimensões: estime separadamente embalagem (com folga para envio) e peça (sem embalagem). " +
+  "IDIOMA OBRIGATÓRIO: responda SEMPRE em PORTUGUÊS DO BRASIL. Nomes das peças em português. NUNCA use espanhol. " +
+  "Exemplos corretos: Filtro de Ar, Paralama Dianteiro, Carenagem Lateral, Vela de Ignição, Eixo de Balancim. " +
+  "TÍTULO: entre 60 e 120 caracteres. Formato: [Nome Peça PT-BR] Honda [Modelo] [Anos] Original. " +
+  "Exemplo: 'Filtro de Ar Honda XRE 300 Adventure Sahara 2023 2024 2025 Original'. " +
+  "TERMOS_BUSCA_ML: gere 4 termos curtos em português para buscar no Mercado Livre. " +
+  "Exemplo: ['filtro ar xre 300', 'filtro ar honda xre', 'filtro ar xre300 original']. " +
+  "NUNCA invente modelo — use só o que a pesquisa confirmar. " +
+  "Dimensões: estime embalagem (com folga) e peça separadamente. " +
   "Responda SOMENTE com JSON válido, sem markdown.";
 
 function buildUserMsg(pn, ctx) {
