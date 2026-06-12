@@ -611,9 +611,8 @@ async function runSearch() {
     var pnHifen = pnUpper.replace(/^(\d{5})([A-Z]\d[A-Z])([A-Z0-9]+)$/, "$1-$2-$3");
 
     var q = mlResults.length === 0
-      ? "Honda \"" + pnHifen + "\" OR \"" + pnUpper + "\" peça moto modelo ano compatibilidade" +
-        (modelCode ? " OR \"Honda " + modelCode + " moto\"" : "")
-      : pnUpper + " peça moto compatibilidade anos modelos original";
+      ? "\"" + pnHifen + "\" OR \"" + pnUpper + "\" peça Honda moto catálogo"
+      : "\"" + pnHifen + "\" OR \"" + pnUpper + "\" compatibilidade moto anos";
     tavilyData = await searchTavily(q, 8);
     setStep("step2","done","Pesquisa web concluída — " + ((tavilyData.results||[]).length) + " fonte(s)");
   } catch(e) {
@@ -638,23 +637,29 @@ async function runSearch() {
     setStep("step3","warn","Erro IA: " + e.message);
   }
 
-  // STEP 4: Fallback ML search + render
-  setStep("step4","running","Consolidando resultados...");
+  // STEP 4: Fallback ML search usando nome e termos gerados pela IA
+  setStep("step4","running","Buscando no ML pelos termos identificados...");
   try {
     if (mlResults.length === 0) {
       var terms = bestTerms(aiResults);
       var nome  = bestName(aiResults, pn);
-      for (var i = 0; i < terms.length; i++) {
-        var r = await searchML(terms[i]);
-        if (r.length > 0) { mlResults = r; break; }
+      // Tenta cada termo de busca gerado pela IA
+      for (var i = 0; i < terms.length && mlResults.length === 0; i++) {
+        mlResults = await searchML(terms[i]);
       }
+      // Tenta nome da peça
       if (mlResults.length === 0 && nome && nome !== pnUpper) {
-        var r2 = await searchML(nome);
-        if (r2.length > 0) mlResults = r2;
+        mlResults = await searchML(nome);
+      }
+      // Tenta só as primeiras palavras do título gerado (mais genérico)
+      if (mlResults.length === 0) {
+        var titulo = (aiResults.groq && aiResults.groq.titulo_anuncio) || "";
+        var primeiras = titulo.split(" ").slice(0, 5).join(" ");
+        if (primeiras.length > 5) mlResults = await searchML(primeiras);
       }
     }
     setStep("step4", mlResults.length>0?"done":"warn",
-      mlResults.length>0 ? "Pronto — " + mlResults.length + " anúncio(s) para exibir" : "Nenhum anúncio ML encontrado");
+      mlResults.length>0 ? "Pronto — " + mlResults.length + " anúncio(s) para exibir" : "Nenhum anúncio ML para este PN");
   } catch(e) {
     setStep("step4","error","Erro: " + e.message);
   }
@@ -666,12 +671,12 @@ async function runSearch() {
 function buildContext(pn, mlResults, tavilyData) {
   var ctx = "";
 
-  // Dica: código de modelo Honda embutido no PN
+  // Código de modelo Honda embutido no PN (ex: 61110-K2K-B000 → K2K)
   var mCode = pn.toUpperCase().match(/^\d{5}([A-Z]\d[A-Z])/);
   if (mCode) {
-    ctx += "DICA: Part number Honda com código de modelo \"" + mCode[1] + "\".\n" +
-      "Exemplos conhecidos: K3H=XRE300, K2K=CB300R, GJF=CG160, KWN=NXR160, ZWH=PCX150.\n" +
-      "Use os resultados da web para confirmar o modelo exato deste código.\n\n";
+    ctx += "DICA: Part number Honda. Código de modelo: \"" + mCode[1] + "\".\n" +
+      "Use APENAS os resultados da web abaixo para identificar qual moto usa este código.\n" +
+      "NÃO invente modelo — se a web não confirmar, coloque 'Honda Original' no título.\n\n";
   }
 
   if (mlResults.length > 0) {
