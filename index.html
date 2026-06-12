@@ -246,13 +246,22 @@
 </div>
 
 <script>
-var ML_CLIENT_ID  = "1356946563157371";
-var REDIRECT_URI  = "https://merry-bublanina-ee4513.netlify.app/callback";
-var TAVILY_URL    = "/api/tavily";
-var GROQ_URL      = "/api/groq";
-var GEMINI_URL    = "/api/gemini";
-var ML_TOKEN_URL  = "/api/ml-token";
-var ML_SEARCH_URL = "/api/ml-search";
+var ML_CLIENT_ID   = "1356946563157371";
+var NETLIFY_BASE   = "https://merry-bublanina-ee4513.netlify.app";
+var GITHUB_PAGES   = "https://sheldonthiago.github.io/analisador-partnumber-ml";
+
+// Detect environment: GitHub Pages uses absolute Netlify API URLs
+var ON_GITHUB      = window.location.hostname === "sheldonthiago.github.io";
+var API_BASE       = ON_GITHUB ? NETLIFY_BASE : "";
+var REDIRECT_URI   = ON_GITHUB
+  ? GITHUB_PAGES + "/callback"
+  : NETLIFY_BASE + "/callback";
+
+var TAVILY_URL    = API_BASE + "/api/tavily";
+var GROQ_URL      = API_BASE + "/api/groq";
+var GEMINI_URL    = API_BASE + "/api/gemini";
+var ML_TOKEN_URL  = API_BASE + "/api/ml-token";
+var ML_SEARCH_URL = API_BASE + "/api/ml-search";
 
 var mlToken  = localStorage.getItem("ml_access_token")  || null;
 var mlRefresh= localStorage.getItem("ml_refresh_token") || null;
