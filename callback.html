@@ -18,7 +18,7 @@
   var params = new URLSearchParams(window.location.search);
   var code = params.get('code');
   var error = params.get('error');
-  // GitHub Pages: redirect to repo root; Netlify: redirect to /
+  // GitHub Pages needs the full repo path prefix; Vercel/Netlify use /
   var isGitHubPages = window.location.hostname === 'sheldonthiago.github.io';
   var homeURL = isGitHubPages ? '/analisador-partnumber-ml/' : '/';
   if (code) {

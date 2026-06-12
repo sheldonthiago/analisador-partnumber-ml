@@ -247,15 +247,17 @@
 
 <script>
 var ML_CLIENT_ID   = "1356946563157371";
+
+// Detect environment for OAuth callback and API base
+var isGitHubPages  = window.location.hostname === "sheldonthiago.github.io";
 var NETLIFY_BASE   = "https://merry-bublanina-ee4513.netlify.app";
 var GITHUB_PAGES   = "https://sheldonthiago.github.io/analisador-partnumber-ml";
 
-// Detect environment: GitHub Pages uses absolute Netlify API URLs
-var ON_GITHUB      = window.location.hostname === "sheldonthiago.github.io";
-var API_BASE       = ON_GITHUB ? NETLIFY_BASE : "";
-var REDIRECT_URI   = ON_GITHUB
+// On GitHub Pages, APIs are on Netlify; on Vercel/Netlify, use relative paths
+var API_BASE       = isGitHubPages ? NETLIFY_BASE : "";
+var REDIRECT_URI   = isGitHubPages
   ? GITHUB_PAGES + "/callback"
-  : NETLIFY_BASE + "/callback";
+  : window.location.origin + "/callback";
 
 var TAVILY_URL    = API_BASE + "/api/tavily";
 var GROQ_URL      = API_BASE + "/api/groq";
