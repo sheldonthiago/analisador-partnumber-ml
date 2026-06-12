@@ -65,7 +65,6 @@
   .src-badge { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 10px; border: 1px solid; }
   .src-badge.groq   { border-color: #3a5a8c; color: #6ab0ff; background: #0d1a2a; }
   .src-badge.gemini { border-color: #1a6a3a; color: #6ecf80; background: #0d1a14; }
-  .src-badge.openai { border-color: #3a2a6a; color: #a88cff; background: #150d2a; }
   .src-badge.ml     { border-color: #6a4a1a; color: #f5c518; background: #1a1200; }
   .src-badge.google { border-color: #6a1a1a; color: #ff8080; background: #1a0d0d; }
   .src-badge.off    { border-color: #2e2e34; color: #444; background: transparent; }
@@ -99,7 +98,6 @@
   .compat-src { font-family: 'DM Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid; }
   .compat-src.groq   { border-color: #3a5a8c; color: #6ab0ff; }
   .compat-src.gemini { border-color: #1a6a3a; color: #6ecf80; }
-  .compat-src.openai { border-color: #3a2a6a; color: #a88cff; }
   .compat-src.ml     { border-color: #6a4a1a; color: #f5c518; }
   .compat-src.google { border-color: #6a1a1a; color: #ff8080; }
 
@@ -127,7 +125,6 @@
   .ai-chip { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 10px; border: 1px solid; }
   .ai-chip.active.groq   { border-color: #3a5a8c; color: #6ab0ff; background: #0d1a2a; }
   .ai-chip.active.gemini { border-color: #1a6a3a; color: #6ecf80; background: #0d1a14; }
-  .ai-chip.active.openai { border-color: #3a2a6a; color: #a88cff; background: #150d2a; }
   .ai-chip.active.google { border-color: #6a1a1a; color: #ff8080; background: #1a0d0d; }
   .ai-chip.inactive { border-color: #2e2e34; color: #3a3a42; background: transparent; }
 </style>
@@ -254,7 +251,6 @@ var REDIRECT_URI  = "https://merry-bublanina-ee4513.netlify.app/callback";
 var TAVILY_URL    = "/api/tavily";
 var GROQ_URL      = "/api/groq";
 var GEMINI_URL    = "/api/gemini";
-var OPENAI_URL    = "/api/openai";
 var ML_TOKEN_URL  = "/api/ml-token";
 var ML_SEARCH_URL = "/api/ml-search";
 
@@ -449,27 +445,12 @@ async function callGemini(ctx, pn) {
   } catch(e) { return null; }
 }
 
-async function callOpenAI(ctx, pn) {
-  try {
-    var res = await fetch(OPENAI_URL, {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        model:"gpt-4o-mini", temperature:0.1, max_tokens:2000,
-        response_format:{type:"json_object"},
-        messages:[{role:"system",content:AI_PROMPT_SYS},{role:"user",content:buildUserMsg(pn,ctx)}]
-      })
-    });
-    var data = await res.json();
-    if (!res.ok) return null;
-    return JSON.parse(data.choices[0].message.content.replace(/```json|```/g,"").trim());
-  } catch(e) { return null; }
-}
 
 // ─── Merge AI results ─────────────────────────────────────────────────────
 
 function mergeTitles(results) {
   var candidates = [];
-  var order = ["groq","gemini","openai"];
+  var order = ["groq","gemini"];
   order.forEach(function(k){
     var r = results[k];
     if (r && r.titulo_anuncio && r.titulo_anuncio.length >= 60) {
@@ -488,7 +469,7 @@ function mergeTitles(results) {
 
 function mergeCompat(results, mlTitles) {
   var map = {};
-  var sources = ["groq","gemini","openai"];
+  var sources = ["groq","gemini"];
 
   sources.forEach(function(src){
     var r = results[src];
@@ -518,7 +499,7 @@ function mergeCompat(results, mlTitles) {
 
 function mergeDims(results, field) {
   var vals = [];
-  ["groq","gemini","openai"].forEach(function(k){
+  ["groq","gemini"].forEach(function(k){
     var r = results[k];
     if (r && r[field]) vals.push(r[field]);
   });
@@ -534,7 +515,7 @@ function mergeDims(results, field) {
 function mergePNs(results, inputPN) {
   var seen = {};
   var pns = [];
-  ["groq","gemini","openai"].forEach(function(k){
+  ["groq","gemini"].forEach(function(k){
     var r = results[k];
     if (!r || !r.part_numbers_compativeis) return;
     r.part_numbers_compativeis.forEach(function(p){
@@ -548,12 +529,12 @@ function mergePNs(results, inputPN) {
 }
 
 function bestName(results, fallback) {
-  return (results.groq&&results.groq.nome_peca) || (results.gemini&&results.gemini.nome_peca) || (results.openai&&results.openai.nome_peca) || fallback;
+  return (results.groq&&results.groq.nome_peca) || (results.gemini&&results.gemini.nome_peca) || fallback;
 }
 
 function bestTerms(results) {
   var all = [];
-  ["groq","gemini","openai"].forEach(function(k){
+  ["groq","gemini"].forEach(function(k){
     var r = results[k];
     if (r && r.termos_busca_ml) r.termos_busca_ml.forEach(function(t){ if(all.indexOf(t)<0) all.push(t); });
   });
@@ -561,8 +542,8 @@ function bestTerms(results) {
 }
 
 function bestConfianca(results) {
-  if (["groq","gemini","openai"].filter(function(k){return results[k]&&results[k].confianca==="alta";}).length >= 2) return "alta";
-  if (["groq","gemini","openai"].filter(function(k){return results[k];}).some(function(k){return results[k].confianca==="alta";})) return "media";
+  if (["groq","gemini"].filter(function(k){return results[k]&&results[k].confianca==="alta";}).length >= 2) return "alta";
+  if (["groq","gemini"].filter(function(k){return results[k];}).some(function(k){return results[k].confianca==="alta";})) return "media";
   return "baixa";
 }
 
@@ -578,7 +559,7 @@ async function runSearch() {
   document.getElementById("resultWrap").style.display = "none";
   document.getElementById("priceSummary").innerHTML = "";
 
-  var mlResults = [], tavilyData = null, aiResults = { groq: null, gemini: null, openai: null };
+  var mlResults = [], tavilyData = null, aiResults = { groq: null, gemini: null };
 
   // STEP 1: ML search
   setStep("step1","running","Buscando anúncios no Mercado Livre...");
@@ -612,16 +593,14 @@ async function runSearch() {
   setStep("step3","running","Consultando Groq · Gemini Flash · ChatGPT em paralelo...");
   try {
     var ctx = buildContext(pn, mlResults, tavilyData);
-    var [groqRes, geminiRes, openaiRes] = await Promise.all([
+    var [groqRes, geminiRes] = await Promise.all([
       callGroq(ctx, pn),
-      callGemini(ctx, pn),
-      callOpenAI(ctx, pn)
+      callGemini(ctx, pn)
     ]);
     aiResults.groq   = groqRes;
     aiResults.gemini = geminiRes;
-    aiResults.openai = openaiRes;
 
-    var ok = [groqRes?"Groq✓":null, geminiRes?"Gemini✓":null, openaiRes?"ChatGPT✓":null].filter(Boolean);
+    var ok = [groqRes?"Groq✓":null, geminiRes?"Gemini✓":null].filter(Boolean);
     setStep("step3", ok.length>0?"done":"warn", "IA: " + (ok.length>0 ? ok.join(" · ") : "Nenhuma IA respondeu"));
   } catch(e) {
     setStep("step3","warn","Erro IA: " + e.message);
@@ -687,7 +666,6 @@ function renderResults(pn, aiResults, mlAds, tavilyData) {
   var srcDefs = [
     {k:"groq",  label:"Groq / Llama"},
     {k:"gemini",label:"Gemini Flash"},
-    {k:"openai",label:"ChatGPT"},
     {k:"google",label:"Google / Tavily"}
   ];
   srcDefs.forEach(function(s){

@@ -30,8 +30,3 @@
   from = "/api/gemini"
   to = "/.netlify/functions/gemini-proxy"
   status = 200
-
-[[redirects]]
-  from = "/api/openai"
-  to = "/.netlify/functions/openai-proxy"
-  status = 200
