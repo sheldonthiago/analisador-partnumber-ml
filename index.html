@@ -604,10 +604,15 @@ async function runSearch() {
   // STEP 2: Google/Tavily web search
   setStep("step2","running","Pesquisando compatibilidade na web (Google)...");
   try {
-    // Formato com hífen para melhor resultado em buscas Honda
-    var pnHifen = pnUpper.replace(/^(\d{5})([A-Z0-9]{3})([A-Z0-9]+)$/, "$1-$2-$3");
+    // Extrai código de modelo Honda (ex: 61110K2KB000 → K2K)
+    var modelCode = "";
+    var mCode = pnUpper.match(/^\d{5}([A-Z]\d[A-Z])/);
+    if (mCode) modelCode = mCode[1];
+    var pnHifen = pnUpper.replace(/^(\d{5})([A-Z]\d[A-Z])([A-Z0-9]+)$/, "$1-$2-$3");
+
     var q = mlResults.length === 0
-      ? "Honda \"" + pnUpper + "\" OR \"" + pnHifen + "\" peça moto compatibilidade modelo ano"
+      ? "Honda \"" + pnHifen + "\" OR \"" + pnUpper + "\" peça moto modelo ano compatibilidade" +
+        (modelCode ? " OR \"Honda " + modelCode + " moto\"" : "")
       : pnUpper + " peça moto compatibilidade anos modelos original";
     tavilyData = await searchTavily(q, 8);
     setStep("step2","done","Pesquisa web concluída — " + ((tavilyData.results||[]).length) + " fonte(s)");
@@ -660,6 +665,15 @@ async function runSearch() {
 
 function buildContext(pn, mlResults, tavilyData) {
   var ctx = "";
+
+  // Dica: código de modelo Honda embutido no PN
+  var mCode = pn.toUpperCase().match(/^\d{5}([A-Z]\d[A-Z])/);
+  if (mCode) {
+    ctx += "DICA: Part number Honda com código de modelo \"" + mCode[1] + "\".\n" +
+      "Exemplos conhecidos: K3H=XRE300, K2K=CB300R, GJF=CG160, KWN=NXR160, ZWH=PCX150.\n" +
+      "Use os resultados da web para confirmar o modelo exato deste código.\n\n";
+  }
+
   if (mlResults.length > 0) {
     ctx += "Títulos reais do Mercado Livre:\n";
     mlResults.slice(0,8).forEach(function(r,i){ ctx += (i+1)+". "+r.title+" — R$"+r.price+"\n"; });
@@ -667,7 +681,7 @@ function buildContext(pn, mlResults, tavilyData) {
   }
   if (tavilyData) {
     if (tavilyData.answer) ctx += "Resumo web: " + tavilyData.answer + "\n\n";
-    (tavilyData.results||[]).slice(0,4).forEach(function(r){ ctx += r.title+"\n"+(r.content||"").substring(0,300)+"\n\n"; });
+    (tavilyData.results||[]).slice(0,6).forEach(function(r){ ctx += r.title+"\n"+(r.content||"").substring(0,400)+"\n\n"; });
   }
   return ctx || "Sem contexto disponível.";
 }
