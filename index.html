@@ -362,23 +362,15 @@ function setStep(id, state, text) {
 
 // ─── ML Search ────────────────────────────────────────────────────────────
 
-// Chama ML diretamente do browser (API pública com CORS) — sem proxy
+// ML busca via proxy Vercel (ML API bloqueia CORS do browser)
 async function searchML(query) {
   var token = await getValidToken();
-  var url = "https://api.mercadolibre.com/sites/MLB/search?q=" + encodeURIComponent(query) + "&limit=10";
-  var headers = { "Accept": "application/json" };
-  if (token) headers["Authorization"] = "Bearer " + token;
+  var url = ML_SEARCH_URL + "?q=" + encodeURIComponent(query) + (token ? "&token=" + encodeURIComponent(token) : "");
   try {
-    var res = await fetch(url, { headers: headers });
-    var data = await res.json();
-    if (data.results && data.results.length > 0) return data.results;
-    // Retry sem token se autenticado retornou vazio
-    if (token) {
-      var res2 = await fetch(url, { headers: { "Accept": "application/json" } });
-      return (await res2.json()).results || [];
-    }
-    return [];
-  } catch(e) { return []; }
+    var res = await fetch(url);
+    if (!res.ok) throw new Error("ML proxy " + res.status);
+    return (await res.json()).results || [];
+  } catch(e) { console.error("ML search:", e); return []; }
 }
 
 function pnVariations(pn) {
