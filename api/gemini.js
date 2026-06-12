@@ -8,12 +8,17 @@ module.exports = async (req, res) => {
   if (!GEMINI_KEY) return res.status(500).json({ error: 'GEMINI_KEY not configured' });
 
   try {
-    const body = req.body;
-    const model = (body && body.model) || 'gemini-1.5-flash';
-    // Remove model from body before forwarding (it's in the URL)
-    const { model: _m, ...payload } = body || {};
+    const body = req.body || {};
+    const model = body.model || 'gemini-1.5-flash';
+
+    // Remove 'model' field before forwarding (it goes in the URL, not the body)
+    const payload = {
+      contents: body.contents,
+      generationConfig: body.generationConfig
+    };
+
     const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,
+      'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + GEMINI_KEY,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
     );
     const data = await r.json();
