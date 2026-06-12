@@ -362,12 +362,23 @@ function setStep(id, state, text) {
 
 // ─── ML Search ────────────────────────────────────────────────────────────
 
+// Chama ML diretamente do browser (API pública com CORS) — sem proxy
 async function searchML(query) {
   var token = await getValidToken();
-  var url = ML_SEARCH_URL + "?q=" + encodeURIComponent(query) + (token ? "&token=" + encodeURIComponent(token) : "");
-  var res = await fetch(url);
-  if (!res.ok) throw new Error("ML " + res.status);
-  return (await res.json()).results || [];
+  var url = "https://api.mercadolibre.com/sites/MLB/search?q=" + encodeURIComponent(query) + "&limit=10";
+  var headers = { "Accept": "application/json" };
+  if (token) headers["Authorization"] = "Bearer " + token;
+  try {
+    var res = await fetch(url, { headers: headers });
+    var data = await res.json();
+    if (data.results && data.results.length > 0) return data.results;
+    // Retry sem token se autenticado retornou vazio
+    if (token) {
+      var res2 = await fetch(url, { headers: { "Accept": "application/json" } });
+      return (await res2.json()).results || [];
+    }
+    return [];
+  } catch(e) { return []; }
 }
 
 function pnVariations(pn) {
@@ -434,9 +445,11 @@ async function callGroq(ctx, pn) {
       })
     });
     var data = await res.json();
-    if (!res.ok) return null;
-    return JSON.parse(data.choices[0].message.content.replace(/```json|```/g,"").trim());
-  } catch(e) { return null; }
+    if (!res.ok) { console.error("Groq error", res.status, data); return null; }
+    var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if (!content) { console.error("Groq: sem content", data); return null; }
+    return JSON.parse(content.replace(/```json|```/g,"").trim());
+  } catch(e) { console.error("Groq exception:", e); return null; }
 }
 
 async function callGemini(ctx, pn) {
@@ -450,10 +463,11 @@ async function callGemini(ctx, pn) {
       })
     });
     var data = await res.json();
-    if (!res.ok || !data.candidates) return null;
+    if (!res.ok) { console.error("Gemini error", res.status, data); return null; }
+    if (!data.candidates || !data.candidates[0]) { console.error("Gemini: sem candidates", data); return null; }
     var text = data.candidates[0].content.parts[0].text;
     return JSON.parse(text.replace(/```json|```/g,"").trim());
-  } catch(e) { return null; }
+  } catch(e) { console.error("Gemini exception:", e); return null; }
 }
 
 
