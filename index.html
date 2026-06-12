@@ -261,7 +261,6 @@ var REDIRECT_URI   = isGitHubPages
 
 var TAVILY_URL    = API_BASE + "/api/tavily";
 var GROQ_URL      = API_BASE + "/api/groq";
-var GEMINI_URL    = API_BASE + "/api/ai-gemini";
 var ML_TOKEN_URL  = API_BASE + "/api/ml-token";
 var ML_SEARCH_URL = API_BASE + "/api/ml-search";
 
@@ -445,22 +444,26 @@ async function callGroq(ctx, pn) {
 }
 
 async function callGemini(ctx, pn) {
+  // Gemini removido — usando segundo Groq com temperatura diferente
+  return callGroqAlt(ctx, pn);
+}
+
+async function callGroqAlt(ctx, pn) {
   try {
-    var prompt = AI_PROMPT_SYS + "\n\n" + buildUserMsg(pn, ctx);
-    var res = await fetch(GEMINI_URL, {
+    var res = await fetch(GROQ_URL, {
       method:"POST", headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
-        model:"gemini-1.5-flash",
-        contents:[{parts:[{text:prompt}]}],
-        generationConfig:{temperature:0.1,maxOutputTokens:2000,responseMimeType:"application/json"}
+        model:"llama-3.3-70b-versatile", temperature:0.3, max_tokens:2000,
+        response_format:{type:"json_object"},
+        messages:[{role:"system",content:AI_PROMPT_SYS},{role:"user",content:buildUserMsg(pn,ctx)}]
       })
     });
     var data = await res.json();
-    if (!res.ok) { console.error("Gemini error", res.status, data); return null; }
-    if (!data.candidates || !data.candidates[0]) { console.error("Gemini: sem candidates", data); return null; }
-    var text = data.candidates[0].content.parts[0].text;
-    return JSON.parse(text.replace(/```json|```/g,"").trim());
-  } catch(e) { console.error("Gemini exception:", e); return null; }
+    if (!res.ok) { console.error("Groq-alt error", res.status, data); return null; }
+    var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if (!content) return null;
+    return JSON.parse(content.replace(/```json|```/g,"").trim());
+  } catch(e) { console.error("Groq-alt exception:", e); return null; }
 }
 
 
@@ -683,7 +686,7 @@ function renderResults(pn, aiResults, mlAds, tavilyData) {
   var srcHtml = "";
   var srcDefs = [
     {k:"groq",  label:"Groq / Llama"},
-    {k:"gemini",label:"Gemini Flash"},
+    {k:"gemini",label:"Groq Alt"},
     {k:"google",label:"Google / Tavily"}
   ];
   srcDefs.forEach(function(s){
