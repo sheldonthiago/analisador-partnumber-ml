@@ -1,5 +1,9 @@
 {
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/callback", "dest": "/callback.html" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
