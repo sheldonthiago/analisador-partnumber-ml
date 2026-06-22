@@ -6,7 +6,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0d0d0f; color: #e8e4dc; font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 24px 20px; max-width: 980px; margin: 0 auto; }
+  body { background: #0d0d0f; color: #e8e4dc; font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 24px 20px; max-width: 960px; margin: 0 auto; }
 
   .header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid #2a2a2e; padding-bottom: 16px; }
   .logo-box { background: #f5c518; color: #0d0d0f; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.08em; padding: 5px 9px; border-radius: 4px; }
@@ -41,67 +41,31 @@
 
   .result-wrap { display: none; flex-direction: column; gap: 16px; }
   .card { background: #18181c; border: 1px solid #2e2e34; border-radius: 10px; overflow: hidden; }
-  .card-header { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1px solid #2e2e34; background: #1e1e24; flex-wrap: wrap; gap: 8px; }
+  .card-header { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1px solid #2e2e34; background: #1e1e24; }
   .card-icon { font-size: 14px; }
   .card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #f5c518; }
   .card-badge { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 10px; color: #555; background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 2px 8px; }
   .card-badge.green { border-color: #3a8c4a; color: #6ecf80; }
   .card-badge.yellow { border-color: #8c7a1a; color: #f5c518; }
   .card-badge.blue { border-color: #1a3a6a; color: #6ab0ff; }
-  .card-badge.purple { border-color: #4a1a8c; color: #a88cff; }
   .card-body { padding: 16px; }
 
-  /* Title */
   .title-box { background: #0d0d0f; border: 1px solid #f5c518; border-radius: 6px; padding: 12px 14px; font-family: 'DM Mono', monospace; font-size: 13px; color: #f5c518; line-height: 1.5; margin-bottom: 8px; }
-  .char-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .char-count { font-size: 10px; font-family: 'DM Mono', monospace; }
-  .char-count.ok { color: #6ecf80; }
-  .char-count.warn { color: #e0a040; }
+  .char-row { display: flex; align-items: center; gap: 12px; }
+  .char-count { font-size: 10px; color: #555; font-family: 'DM Mono', monospace; }
   .copy-btn { background: none; border: 1px solid #2e2e34; color: #555; border-radius: 4px; padding: 3px 8px; font-size: 10px; cursor: pointer; transition: all 0.15s; }
   .copy-btn:hover { border-color: #f5c518; color: #f5c518; }
 
-  /* Source consensus badges */
-  .source-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2e2e34; }
-  .src-badge { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 10px; border: 1px solid; }
-  .src-badge.groq   { border-color: #3a5a8c; color: #6ab0ff; background: #0d1a2a; }
-  .src-badge.gemini { border-color: #1a6a3a; color: #6ecf80; background: #0d1a14; }
-  .src-badge.ml     { border-color: #6a4a1a; color: #f5c518; background: #1a1200; }
-  .src-badge.google { border-color: #6a1a1a; color: #ff8080; background: #1a0d0d; }
-  .src-badge.off    { border-color: #2e2e34; color: #444; background: transparent; }
-
-  /* Dimensions */
-  .dims-section { margin-bottom: 12px; }
-  .dims-section-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
   .dims-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .dim-chip { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; text-align: center; min-width: 75px; }
-  .dim-chip.highlight { border-color: #3a5a8c; }
   .dim-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
   .dim-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: #e8e4dc; }
-  .dims-divider { border: none; border-top: 1px solid #2e2e34; margin: 12px 0; }
 
-  /* Part numbers */
   .pn-grid { display: flex; flex-wrap: wrap; gap: 7px; }
   .pn-tag { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 4px; padding: 4px 10px; font-family: 'DM Mono', monospace; font-size: 11px; color: #b0c4ff; }
   .pn-tag.original { border-color: #3a8c4a; color: #6ecf80; }
   .pn-tag.aftermarket { border-color: #5a4a8c; color: #a88cff; }
 
-  /* Compatibility */
-  .compat-table { width: 100%; border-collapse: collapse; }
-  .compat-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #444; padding: 8px 12px; border-bottom: 1px solid #2e2e34; text-align: left; }
-  .compat-table td { padding: 9px 12px; border-bottom: 1px solid #1c1c22; font-size: 12px; color: #ccc; vertical-align: top; }
-  .compat-table tr:last-child td { border-bottom: none; }
-  .compat-table tr:hover td { background: #1e1e26; }
-  .years-wrap { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-  .year-pill { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 3px; padding: 2px 6px; font-family: 'DM Mono', monospace; font-size: 10px; color: #b0c4ff; }
-  .year-pill.highlight { border-color: #3a5a8c; color: #6ab0ff; }
-  .compat-sources { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
-  .compat-src { font-family: 'DM Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid; }
-  .compat-src.groq   { border-color: #3a5a8c; color: #6ab0ff; }
-  .compat-src.gemini { border-color: #1a6a3a; color: #6ecf80; }
-  .compat-src.ml     { border-color: #6a4a1a; color: #f5c518; }
-  .compat-src.google { border-color: #6a1a1a; color: #ff8080; }
-
-  /* Ads */
   .ads-table { width: 100%; border-collapse: collapse; }
   .ads-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #444; padding: 8px 12px; border-bottom: 1px solid #2e2e34; text-align: left; }
   .ads-table td { padding: 9px 12px; border-bottom: 1px solid #1c1c22; font-size: 11px; color: #ccc; vertical-align: middle; }
@@ -120,13 +84,6 @@
   .price-chip { background: #0d0d0f; border: 1px solid #2e2e34; border-radius: 6px; padding: 9px 14px; text-align: center; flex: 1; min-width: 90px; }
   .price-chip-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
   .price-chip-value { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #f5c518; }
-
-  .ai-sources-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-  .ai-chip { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 10px; border: 1px solid; }
-  .ai-chip.active.groq   { border-color: #3a5a8c; color: #6ab0ff; background: #0d1a2a; }
-  .ai-chip.active.gemini { border-color: #1a6a3a; color: #6ecf80; background: #0d1a14; }
-  .ai-chip.active.google { border-color: #6a1a1a; color: #ff8080; background: #1a0d0d; }
-  .ai-chip.inactive { border-color: #2e2e34; color: #3a3a42; background: transparent; }
 </style>
 </head>
 <body>
@@ -134,9 +91,10 @@
 <div class="header">
   <div class="logo-box">ML</div>
   <div class="header-title">Analisador de Peças</div>
-  <div class="header-sub">Sucatão do Major · v6.0</div>
+  <div class="header-sub">Sucatão do Major · v5.3</div>
 </div>
 
+<!-- Auth Bar -->
 <div class="auth-bar" id="authBar">
   <span id="authStatus" class="auth-status disconnected">⚠ Mercado Livre não conectado</span>
   <span style="flex:1;font-size:11px;color:#444" id="authInfo"></span>
@@ -144,7 +102,7 @@
 </div>
 
 <div class="search-row">
-  <input class="search-input" id="inputPN" type="text" placeholder="Part Number ou Nome da Peça — Ex: 17555K3HB000 ou Filtro de Ar CG 160" autocomplete="off" spellcheck="false" />
+  <input class="search-input" id="inputPN" type="text" placeholder="Digite o Part Number — Ex: 17555K3HB000" autocomplete="off" spellcheck="false" />
   <button class="btn-search" id="btnSearch" onclick="runSearch()">🔍 Analisar</button>
 </div>
 
@@ -152,89 +110,26 @@
   <div class="pstep" id="step1"><span>⏳</span> Aguardando...</div>
   <div class="pstep" id="step2"><span>⏳</span> Aguardando...</div>
   <div class="pstep" id="step3"><span>⏳</span> Aguardando...</div>
-  <div class="pstep" id="step4"><span>⏳</span> Aguardando...</div>
 </div>
 
 <div class="result-wrap" id="resultWrap">
-
-  <!-- Título -->
   <div class="card">
-    <div class="card-header">
-      <span class="card-icon">📝</span>
-      <span class="card-title">Título Otimizado para Anúncio</span>
-      <span class="card-badge yellow" id="badgeTitulo">—</span>
-    </div>
+    <div class="card-header"><span class="card-icon">📝</span><span class="card-title">Título Otimizado para Anúncio</span><span class="card-badge yellow" id="badgeTitulo">—</span></div>
     <div class="card-body">
       <div class="title-box" id="tituloBox">—</div>
-      <div class="char-row">
-        <span class="char-count" id="charCount">—</span>
-        <button class="copy-btn" onclick="copyTitulo()">Copiar</button>
-        <span id="titleSourceLabel" style="font-size:10px;color:#444;font-family:'DM Mono',monospace;margin-left:auto"></span>
-      </div>
-      <div class="source-row" id="titleSources"></div>
+      <div class="char-row"><span class="char-count" id="charCount">—</span><button class="copy-btn" onclick="copyTitulo()">Copiar</button></div>
     </div>
   </div>
-
-  <!-- Dimensões e Peso -->
   <div class="card">
-    <div class="card-header">
-      <span class="card-icon">📦</span>
-      <span class="card-title">Dimensões e Peso</span>
-      <span class="card-badge" id="badgeDims">Mercado Envios</span>
-    </div>
-    <div class="card-body">
-      <div class="dims-section">
-        <div class="dims-section-label">📦 Embalagem (para frete)</div>
-        <div class="dims-row" id="dimsEmbalagem"></div>
-      </div>
-      <hr class="dims-divider">
-      <div class="dims-section">
-        <div class="dims-section-label">🔩 Peça (sem embalagem)</div>
-        <div class="dims-row" id="dimsPeca"></div>
-      </div>
-    </div>
+    <div class="card-header"><span class="card-icon">📦</span><span class="card-title">Dimensões Estimadas para Frete</span><span class="card-badge" id="badgeDims">Mercado Envios</span></div>
+    <div class="card-body"><div class="dims-row" id="dimsRow"></div></div>
   </div>
-
-  <!-- Compatibilidade de Veículos -->
   <div class="card">
-    <div class="card-header">
-      <span class="card-icon">🚗</span>
-      <span class="card-title">Compatibilidade de Veículos</span>
-      <span class="card-badge purple" id="badgeCompat">—</span>
-    </div>
-    <div class="card-body" style="padding:0">
-      <table class="compat-table">
-        <thead>
-          <tr>
-            <th>Veículo / Modelo</th>
-            <th>Anos Compatíveis</th>
-            <th>Fontes</th>
-          </tr>
-        </thead>
-        <tbody id="compatBody">
-          <tr><td colspan="3" class="no-results">Aguardando análise...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Part Numbers -->
-  <div class="card">
-    <div class="card-header">
-      <span class="card-icon">🔗</span>
-      <span class="card-title">Part Numbers Compatíveis</span>
-      <span class="card-badge" id="badgePNs">—</span>
-    </div>
+    <div class="card-header"><span class="card-icon">🔗</span><span class="card-title">Part Numbers Compatíveis</span><span class="card-badge" id="badgePNs">—</span></div>
     <div class="card-body"><div class="pn-grid" id="pnGrid"></div></div>
   </div>
-
-  <!-- Anúncios ML -->
   <div class="card">
-    <div class="card-header">
-      <span class="card-icon">🛒</span>
-      <span class="card-title">Anúncios no Mercado Livre</span>
-      <span class="card-badge" id="badgeAds">—</span>
-    </div>
+    <div class="card-header"><span class="card-icon">🛒</span><span class="card-title">Anúncios no Mercado Livre</span><span class="card-badge" id="badgeAds">—</span></div>
     <div style="overflow-x:auto">
       <table class="ads-table">
         <thead><tr><th>#</th><th>Título</th><th>Preço</th><th>Cond.</th><th>Vendedor</th><th></th></tr></thead>
@@ -246,35 +141,23 @@
 </div>
 
 <script>
-var ML_CLIENT_ID   = "1356946563157371";
+var ML_CLIENT_ID = "1356946563157371";
+var REDIRECT_URI = "https://analisador-partnumber-ml.vercel.app/callback";
+var TAVILY_URL = "/api/tavily";
+var GROQ_URL = "/api/groq";
+var ML_TOKEN_URL = "/api/ml-token";
+var ML_SEARCH_URL = "/api/ml-search";
 
-// Detect environment for OAuth callback and API base
-var isGitHubPages  = window.location.hostname === "sheldonthiago.github.io";
-var NETLIFY_BASE   = "https://merry-bublanina-ee4513.netlify.app";
-var GITHUB_PAGES   = "https://sheldonthiago.github.io/analisador-partnumber-ml";
-
-// On GitHub Pages, APIs are on Netlify; on Vercel/Netlify, use relative paths
-var API_BASE       = isGitHubPages ? NETLIFY_BASE : "";
-var REDIRECT_URI   = isGitHubPages
-  ? GITHUB_PAGES + "/callback"
-  : window.location.origin + "/callback";
-
-var TAVILY_URL    = API_BASE + "/api/tavily";
-var GROQ_URL      = API_BASE + "/api/groq";
-var ML_TOKEN_URL  = API_BASE + "/api/ml-token";
-var ML_SEARCH_URL = API_BASE + "/api/ml-search";
-
-var mlToken  = localStorage.getItem("ml_access_token")  || null;
-var mlRefresh= localStorage.getItem("ml_refresh_token") || null;
+// Auth state
+var mlToken = localStorage.getItem("ml_access_token") || null;
+var mlRefresh = localStorage.getItem("ml_refresh_token") || null;
 var mlExpiry = parseInt(localStorage.getItem("ml_token_expiry") || "0");
-var mlUser   = localStorage.getItem("ml_user") || null;
-
-// ─── Auth ──────────────────────────────────────────────────────────────────
+var mlUser = localStorage.getItem("ml_user") || null;
 
 function updateAuthBar() {
   var status = document.getElementById("authStatus");
-  var info   = document.getElementById("authInfo");
-  var btn    = document.getElementById("btnConnect");
+  var info = document.getElementById("authInfo");
+  var btn = document.getElementById("btnConnect");
   if (mlToken && Date.now() < mlExpiry) {
     status.textContent = "✓ Mercado Livre conectado";
     status.className = "auth-status connected";
@@ -294,50 +177,90 @@ function updateAuthBar() {
 }
 
 function connectML() {
-  window.location.href = "https://auth.mercadolivre.com.br/authorization" +
-    "?response_type=code&client_id=" + ML_CLIENT_ID +
+  var authUrl = "https://auth.mercadolivre.com.br/authorization" +
+    "?response_type=code" +
+    "&client_id=" + ML_CLIENT_ID +
     "&redirect_uri=" + encodeURIComponent(REDIRECT_URI);
+  window.location.href = authUrl;
 }
 
 function disconnectML() {
-  ["ml_access_token","ml_refresh_token","ml_token_expiry","ml_user"].forEach(function(k){ localStorage.removeItem(k); });
+  localStorage.removeItem("ml_access_token");
+  localStorage.removeItem("ml_refresh_token");
+  localStorage.removeItem("ml_token_expiry");
+  localStorage.removeItem("ml_user");
   mlToken = null; mlRefresh = null; mlExpiry = 0; mlUser = null;
   updateAuthBar();
 }
 
 async function handleOAuthCallback() {
+  // Check URL params first (direct redirect)
   var params = new URLSearchParams(window.location.search);
-  var code = params.get("code") || localStorage.getItem("ml_oauth_code");
-  if (code) localStorage.removeItem("ml_oauth_code");
-  var err = localStorage.getItem("ml_oauth_error");
-  if (err) { localStorage.removeItem("ml_oauth_error"); alert("Erro ao conectar: " + err); return; }
+  var code = params.get("code");
+
+  // Also check localStorage (set by callback.html)
+  if (!code) {
+    code = localStorage.getItem("ml_oauth_code");
+    if (code) localStorage.removeItem("ml_oauth_code");
+  }
+
+  var oauthError = localStorage.getItem("ml_oauth_error");
+  if (oauthError) {
+    localStorage.removeItem("ml_oauth_error");
+    alert("Erro ao conectar: " + oauthError);
+    return;
+  }
+
   if (!code) return;
+
+  // Clean URL
   window.history.replaceState({}, document.title, "/");
+
   try {
-    var res  = await fetch(ML_TOKEN_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({code:code,grant_type:"authorization_code"}) });
+    var res = await fetch(ML_TOKEN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code, grant_type: "authorization_code" })
+    });
     var data = await res.json();
     if (data.access_token) {
-      mlToken = data.access_token; mlRefresh = data.refresh_token;
+      mlToken = data.access_token;
+      mlRefresh = data.refresh_token;
       mlExpiry = Date.now() + (data.expires_in - 60) * 1000;
       localStorage.setItem("ml_access_token", mlToken);
       localStorage.setItem("ml_refresh_token", mlRefresh);
       localStorage.setItem("ml_token_expiry", mlExpiry);
-      var ud = await (await fetch("https://api.mercadolibre.com/users/me",{headers:{"Authorization":"Bearer "+mlToken}})).json();
-      mlUser = ud.nickname || ud.email || "Conectado";
+
+      // Get user info
+      var userRes = await fetch("https://api.mercadolibre.com/users/me", {
+        headers: { "Authorization": "Bearer " + mlToken }
+      });
+      var userData = await userRes.json();
+      mlUser = userData.nickname || userData.email || "Conectado";
       localStorage.setItem("ml_user", mlUser);
       updateAuthBar();
     }
-  } catch(e) { console.error("OAuth error:", e); }
+  } catch(e) {
+    console.error("OAuth error:", e);
+  }
 }
 
 async function refreshToken() {
   if (!mlRefresh) return false;
   try {
-    var res = await fetch(ML_TOKEN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({refresh_token:mlRefresh,grant_type:"refresh_token"})});
-    var d = await res.json();
-    if (d.access_token) {
-      mlToken=d.access_token; mlRefresh=d.refresh_token||mlRefresh; mlExpiry=Date.now()+(d.expires_in-60)*1000;
-      localStorage.setItem("ml_access_token",mlToken); localStorage.setItem("ml_refresh_token",mlRefresh); localStorage.setItem("ml_token_expiry",mlExpiry);
+    var res = await fetch(ML_TOKEN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: mlRefresh, grant_type: "refresh_token" })
+    });
+    var data = await res.json();
+    if (data.access_token) {
+      mlToken = data.access_token;
+      mlRefresh = data.refresh_token || mlRefresh;
+      mlExpiry = Date.now() + (data.expires_in - 60) * 1000;
+      localStorage.setItem("ml_access_token", mlToken);
+      localStorage.setItem("ml_refresh_token", mlRefresh);
+      localStorage.setItem("ml_token_expiry", mlExpiry);
       return true;
     }
   } catch(e) {}
@@ -346,487 +269,227 @@ async function refreshToken() {
 
 async function getValidToken() {
   if (mlToken && Date.now() < mlExpiry) return mlToken;
-  if (mlRefresh && await refreshToken()) return mlToken;
+  if (mlRefresh) {
+    var ok = await refreshToken();
+    if (ok) return mlToken;
+  }
   return null;
 }
 
-// ─── Progress ─────────────────────────────────────────────────────────────
-
 function setStep(id, state, text) {
   var el = document.getElementById(id);
-  var icons = { running:'<div class="spinner"></div>', done:'✅', warn:'⚠️', error:'❌' };
+  var icons = { running: '<div class="spinner"></div>', done: '✅', warn: '⚠️', error: '❌' };
   el.className = 'pstep ' + state;
   el.innerHTML = '<span>' + (icons[state] || '⏳') + '</span> ' + text;
 }
 
-// ─── ML Search ────────────────────────────────────────────────────────────
-
-// ML busca via proxy Vercel (busca pública, sem token)
 async function searchML(query) {
-  try {
-    var url = ML_SEARCH_URL + "?q=" + encodeURIComponent(query);
-    var res = await fetch(url);
-    if (!res.ok) { console.error("ML proxy status:", res.status); return []; }
-    var data = await res.json();
-    return data.results || [];
-  } catch(e) { console.error("ML search error:", e); return []; }
+  var token = await getValidToken();
+  var url = ML_SEARCH_URL + "?q=" + encodeURIComponent(query) + (token ? "&token=" + encodeURIComponent(token) : "");
+  var res = await fetch(url);
+  if (!res.ok) throw new Error("ML " + res.status);
+  var data = await res.json();
+  return data.results || [];
 }
 
 function pnVariations(pn) {
   var vars = [pn, pn.toLowerCase()];
-  // Formato com hífen: 17555K3HB000 → 17555-K3H-B000
   var m = pn.match(/^(\d{5})([A-Z]\d[A-Z])([A-Z0-9]+)$/);
-  if (m) {
-    vars.push(m[1]+"-"+m[2]+"-"+m[3]);
-    vars.push(m[1].toLowerCase()+"-"+m[2].toLowerCase()+"-"+m[3].toLowerCase());
-    // Sem o sufixo de cor: 17555-K3H
-    vars.push(m[1]+"-"+m[2]);
-    vars.push(m[1]+m[2]); // 17555K3H
-  }
+  if (m) vars.push(m[1] + "-" + m[2] + "-" + m[3]);
   var m2 = pn.match(/^(\d+)([A-Z]+)(\d+)([A-Z]+)(\d+)$/);
-  if (m2) vars.push(m2[1]+"-"+m2[2]+m2[3]+"-"+m2[4]+m2[5]);
+  if (m2) vars.push(m2[1] + "-" + m2[2] + m2[3] + "-" + m2[4] + m2[5]);
   return vars.filter(function(v,i,a){ return a.indexOf(v)===i; });
 }
 
 async function searchMLWithVariations(pn) {
-  var vars = pnVariations(pn);
-  for (var i = 0; i < vars.length; i++) {
-    var r = await searchML(vars[i]);
-    if (r.length > 0) return { results: r, query: vars[i] };
+  var variations = pnVariations(pn);
+  for (var i = 0; i < variations.length; i++) {
+    var results = await searchML(variations[i]);
+    if (results.length > 0) return { results: results, query: variations[i] };
   }
   return { results: [], query: pn };
 }
 
-// ─── Tavily (Google) ──────────────────────────────────────────────────────
-
 async function searchTavily(query, max) {
-  var res = await fetch(TAVILY_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query:query,max_results:max||5}) });
-  if (!res.ok) throw new Error("Tavily "+res.status);
+  var res = await fetch(TAVILY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: query, max_results: max || 5 })
+  });
+  if (!res.ok) throw new Error("Tavily " + res.status);
   return await res.json();
 }
 
-// ─── AI calls ────────────────────────────────────────────────────────────
-
-var AI_PROMPT_SYS = "Você é especialista em peças originais de moto Honda/Yamaha/Suzuki e SEO para Mercado Livre Brasil. " +
-  "IDIOMA OBRIGATÓRIO: responda SEMPRE em PORTUGUÊS DO BRASIL. Nomes das peças em português. NUNCA use espanhol. " +
-  "Exemplos corretos: Filtro de Ar, Paralama Dianteiro, Carenagem Lateral, Vela de Ignição, Eixo de Balancim. " +
-  "TÍTULO: entre 60 e 120 caracteres. Formato: [Nome Peça PT-BR] Honda [Modelo] [Anos] Original. " +
-  "Exemplo: 'Filtro de Ar Honda XRE 300 Adventure Sahara 2023 2024 2025 Original'. " +
-  "TERMOS_BUSCA_ML: gere 4 termos curtos em português para buscar no Mercado Livre. " +
-  "Exemplo: ['filtro ar xre 300', 'filtro ar honda xre', 'filtro ar xre300 original']. " +
-  "NUNCA invente modelo — use só o que a pesquisa confirmar. " +
-  "Dimensões: estime embalagem (com folga) e peça separadamente. " +
-  "Responda SOMENTE com JSON válido, sem markdown.";
-
-function buildUserMsg(pn, ctx) {
-  return [
-    "Part Number / Peça: " + pn, "",
-    "Contexto disponível:", ctx || "Sem contexto.", "",
-    "Retorne JSON com EXATAMENTE esta estrutura:",
-    '{',
-    '"nome_peca": "nome completo",',
-    '"titulo_anuncio": "TÍTULO COM 60-120 CHARS SEM PART NUMBER",',
-    '"dimensoes_peca": {"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},',
-    '"dimensoes_embalagem": {"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},',
-    '"compatibilidade": [{"veiculo":"Honda CG 160 Fan","anos":["2015","2016","2017"]}],',
-    '"part_numbers_compativeis": [{"codigo":"string","tipo":"original","marca":"string"}],',
-    '"termos_busca_ml": ["termo1","termo2"],',
-    '"confianca": "alta"',
-    '}'
-  ].join("\n");
-}
-
-async function callGroq(ctx, pn) {
-  try {
-    var res = await fetch(GROQ_URL, {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        model:"llama-3.3-70b-versatile", temperature:0.1, max_tokens:2000,
-        response_format:{type:"json_object"},
-        messages:[{role:"system",content:AI_PROMPT_SYS},{role:"user",content:buildUserMsg(pn,ctx)}]
-      })
-    });
-    var data = await res.json();
-    if (!res.ok) { console.error("Groq error", res.status, data); return null; }
-    var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-    if (!content) { console.error("Groq: sem content", data); return null; }
-    return JSON.parse(content.replace(/```json|```/g,"").trim());
-  } catch(e) { console.error("Groq exception:", e); return null; }
-}
-
-async function callGemini(ctx, pn) {
-  // Gemini removido — usando segundo Groq com temperatura diferente
-  return callGroqAlt(ctx, pn);
-}
-
-async function callGroqAlt(ctx, pn) {
-  try {
-    var res = await fetch(GROQ_URL, {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        model:"llama-3.3-70b-versatile", temperature:0.3, max_tokens:2000,
-        response_format:{type:"json_object"},
-        messages:[{role:"system",content:AI_PROMPT_SYS},{role:"user",content:buildUserMsg(pn,ctx)}]
-      })
-    });
-    var data = await res.json();
-    if (!res.ok) { console.error("Groq-alt error", res.status, data); return null; }
-    var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-    if (!content) return null;
-    return JSON.parse(content.replace(/```json|```/g,"").trim());
-  } catch(e) { console.error("Groq-alt exception:", e); return null; }
-}
-
-
-// ─── Merge AI results ─────────────────────────────────────────────────────
-
-function mergeTitles(results) {
-  var candidates = [];
-  var order = ["groq","gemini"];
-  order.forEach(function(k){
-    var r = results[k];
-    if (r && r.titulo_anuncio && r.titulo_anuncio.length >= 60) {
-      candidates.push({ source: k, title: r.titulo_anuncio });
-    }
+async function callGroq(systemMsg, userMsg) {
+  var res = await fetch(GROQ_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.1,
+      max_tokens: 1500,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: systemMsg },
+        { role: "user", content: userMsg }
+      ]
+    })
   });
-  if (!candidates.length) {
-    order.forEach(function(k){
-      var r = results[k];
-      if (r && r.titulo_anuncio) candidates.push({ source: k, title: r.titulo_anuncio });
-    });
-  }
-  candidates.sort(function(a,b){ return b.title.length - a.title.length; });
-  return candidates[0] || { source: "—", title: "" };
+  var data = await res.json();
+  if (!res.ok) throw new Error(data.error ? data.error.message : "Groq error");
+  return JSON.parse(data.choices[0].message.content.replace(/```json|```/g,"").trim());
 }
-
-function mergeCompat(results, mlTitles) {
-  var map = {};
-  var sources = ["groq","gemini"];
-
-  sources.forEach(function(src){
-    var r = results[src];
-    if (!r || !r.compatibilidade) return;
-    r.compatibilidade.forEach(function(c){
-      if (!c || !c.veiculo) return;
-      var key = c.veiculo.trim();
-      if (!map[key]) map[key] = { veiculo: key, anos: {}, sources: [] };
-      if (map[key].sources.indexOf(src) < 0) map[key].sources.push(src);
-      (c.anos||[]).forEach(function(a){ map[key].anos[String(a)] = true; });
-    });
-  });
-
-  // Extract years from ML titles
-  if (mlTitles && mlTitles.length > 0) {
-    var yearRe = /\b(19|20)\d{2}\b/g;
-    var mlYears = {};
-    mlTitles.forEach(function(t){ var m; while((m=yearRe.exec(t))!==null) mlYears[m[0]]=true; });
-    Object.keys(map).forEach(function(k){
-      Object.keys(mlYears).forEach(function(y){ map[k].anos[y]=true; });
-      if (map[k].sources.indexOf("ml")<0) map[k].sources.push("ml");
-    });
-  }
-
-  return Object.values(map).sort(function(a,b){ return b.sources.length - a.sources.length; });
-}
-
-function mergeDims(results, field) {
-  var vals = [];
-  ["groq","gemini"].forEach(function(k){
-    var r = results[k];
-    if (r && r[field]) vals.push(r[field]);
-  });
-  if (!vals.length) return {comprimento_cm:20,largura_cm:15,altura_cm:10,peso_kg:0.5};
-  var out = {};
-  ["comprimento_cm","largura_cm","altura_cm","peso_kg"].forEach(function(f){
-    var ns = vals.map(function(v){return Number(v[f])||0;}).filter(function(n){return n>0;});
-    out[f] = ns.length ? Math.round((ns.reduce(function(a,b){return a+b;},0)/ns.length)*100)/100 : 0;
-  });
-  return out;
-}
-
-function mergePNs(results, inputPN) {
-  var seen = {};
-  var pns = [];
-  ["groq","gemini"].forEach(function(k){
-    var r = results[k];
-    if (!r || !r.part_numbers_compativeis) return;
-    r.part_numbers_compativeis.forEach(function(p){
-      if (!p || !p.codigo) return;
-      var key = p.codigo.toLowerCase();
-      if (!seen[key]) { seen[key] = true; pns.push(p); }
-    });
-  });
-  if (!pns.length) pns.push({codigo:inputPN,tipo:"original",marca:"—"});
-  return pns;
-}
-
-function bestName(results, fallback) {
-  return (results.groq&&results.groq.nome_peca) || (results.gemini&&results.gemini.nome_peca) || fallback;
-}
-
-function bestTerms(results) {
-  var all = [];
-  ["groq","gemini"].forEach(function(k){
-    var r = results[k];
-    if (r && r.termos_busca_ml) r.termos_busca_ml.forEach(function(t){ if(all.indexOf(t)<0) all.push(t); });
-  });
-  return all;
-}
-
-function bestConfianca(results) {
-  if (["groq","gemini"].filter(function(k){return results[k]&&results[k].confianca==="alta";}).length >= 2) return "alta";
-  if (["groq","gemini"].filter(function(k){return results[k];}).some(function(k){return results[k].confianca==="alta";})) return "media";
-  return "baixa";
-}
-
-// ─── Main flow ────────────────────────────────────────────────────────────
 
 async function runSearch() {
-  var pn = document.getElementById("inputPN").value.trim();
-  if (!pn) { alert("Digite um Part Number ou nome de peça."); return; }
-  var pnUpper = pn.toUpperCase();
+  var pn = document.getElementById("inputPN").value.trim().toUpperCase();
+  if (!pn) { alert("Digite um Part Number."); return; }
 
   document.getElementById("btnSearch").disabled = true;
   document.getElementById("progress").style.display = "flex";
   document.getElementById("resultWrap").style.display = "none";
   document.getElementById("priceSummary").innerHTML = "";
 
-  var mlResults = [], tavilyData = null, aiResults = { groq: null, gemini: null };
+  var mlResults = [], tavilyData = null, analysisData = null;
 
   // STEP 1: ML search
-  setStep("step1","running","Buscando anúncios no Mercado Livre...");
-  setStep("step2","running","Aguardando...");
-  setStep("step3","running","Aguardando...");
-  setStep("step4","running","Aguardando...");
+  setStep("step1", "running", "Buscando anúncios no Mercado Livre...");
+  setStep("step2", "running", "Aguardando...");
+  setStep("step3", "running", "Aguardando...");
 
   try {
-    var mlSearch = await searchMLWithVariations(pnUpper);
+    var mlSearch = await searchMLWithVariations(pn);
     mlResults = mlSearch.results;
-    setStep("step1", mlResults.length>0?"done":"warn",
-      mlResults.length>0 ? mlResults.length+" anúncio(s) encontrado(s) no ML" : "Sem resultados diretos no ML");
+    if (mlResults.length > 0) {
+      setStep("step1", "done", mlResults.length + " anúncio(s) encontrado(s) no ML");
+    } else {
+      setStep("step1", "warn", "Sem resultados no ML — buscando na web...");
+      tavilyData = await searchTavily("peça moto part number " + pn + " especificações compatibilidade", 5).catch(function(){ return {results:[],answer:""}; });
+    }
   } catch(e) {
-    setStep("step1","warn","Erro ML: " + e.message);
+    setStep("step1", "warn", "Erro ML: " + e.message + " — buscando na web...");
+    tavilyData = await searchTavily("peça moto part number " + pn, 5).catch(function(){ return {results:[],answer:""}; });
   }
 
-  // STEP 2: Google/Tavily web search
-  setStep("step2","running","Pesquisando compatibilidade na web (Google)...");
+  // STEP 2: Groq analysis
+  setStep("step2", "running", "Analisando peça com IA...");
   try {
-    // Extrai código de modelo Honda (ex: 61110K2KB000 → K2K)
-    var modelCode = "";
-    var mCode = pnUpper.match(/^\d{5}([A-Z]\d[A-Z])/);
-    if (mCode) modelCode = mCode[1];
-    var pnHifen = pnUpper.replace(/^(\d{5})([A-Z]\d[A-Z])([A-Z0-9]+)$/, "$1-$2-$3");
+    var ctx = "";
+    if (mlResults.length > 0) {
+      ctx = "Títulos reais do Mercado Livre para este part number:\n";
+      mlResults.slice(0,8).forEach(function(r,i){ ctx += (i+1)+". "+r.title+" — R$"+r.price+"\n"; });
+      ctx += "\nUse esses títulos para identificar nome, modelos e anos da peça.";
+    } else if (tavilyData) {
+      if (tavilyData.answer) ctx += tavilyData.answer + "\n\n";
+      (tavilyData.results||[]).slice(0,4).forEach(function(r,i){ ctx += r.title+"\n"+(r.content||"").substring(0,200)+"\n\n"; });
+    }
 
-    var q = mlResults.length === 0
-      ? "\"" + pnHifen + "\" OR \"" + pnUpper + "\" peça Honda moto catálogo"
-      : "\"" + pnHifen + "\" OR \"" + pnUpper + "\" compatibilidade moto anos";
-    tavilyData = await searchTavily(q, 8);
-    setStep("step2","done","Pesquisa web concluída — " + ((tavilyData.results||[]).length) + " fonte(s)");
+    var sys = "Você é especialista em peças de moto e SEO para Mercado Livre Brasil. " +
+      "Gere títulos entre 60-120 chars: [Nome Peça] [Marca Moto] [Modelos] [Anos] Original. " +
+      "Anos separados por espaço. Sem barras, pipes ou part number no título. " +
+      "Responda SOMENTE com JSON válido, sem markdown.";
+
+    var usr = ["Part Number: " + pn, "", "Contexto:", ctx || "Sem contexto disponível.", "",
+      "Retorne JSON:", '{',
+      '"nome_peca":"nome completo da peça",',
+      '"titulo_anuncio":"título otimizado 60-120 chars sem part number",',
+      '"dimensoes":{"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},',
+      '"part_numbers_compativeis":[{"codigo":"string","tipo":"original","marca":"string"}],',
+      '"termos_busca_ml":["termo1","termo2","termo3"],',
+      '"confianca":"alta ou media ou baixa"',
+      '}'].join("\n");
+
+    analysisData = await callGroq(sys, usr);
+    setStep("step2", "done", "Análise: " + (analysisData.nome_peca||pn) + " (" + (analysisData.confianca||"?") + " confiança)");
   } catch(e) {
-    setStep("step2","warn","Web search indisponível: " + e.message);
-    tavilyData = { results: [], answer: "" };
+    setStep("step2", "warn", "Análise parcial: " + e.message);
+    analysisData = { nome_peca: pn, titulo_anuncio: pn, dimensoes: {comprimento_cm:20,largura_cm:15,altura_cm:10,peso_kg:0.5}, part_numbers_compativeis:[{codigo:pn,tipo:"original",marca:"—"}], termos_busca_ml:[pn], confianca:"baixa" };
   }
 
-  // STEP 3: Parallel AI analysis (Groq + Gemini + ChatGPT)
-  setStep("step3","running","Consultando Groq (análise dupla em paralelo)...");
+  // STEP 3: fallback search if ML was empty
+  setStep("step3", "running", "Verificando resultados...");
   try {
-    var ctx = buildContext(pn, mlResults, tavilyData);
-    var [groqRes, geminiRes] = await Promise.all([
-      callGroq(ctx, pn),
-      callGemini(ctx, pn)
-    ]);
-    aiResults.groq   = groqRes;
-    aiResults.gemini = geminiRes;
-
-    var ok = [groqRes?"Groq✓":null, geminiRes?"Gemini✓":null].filter(Boolean);
-    setStep("step3", ok.length>0?"done":"warn", "IA: " + (ok.length>0 ? ok.join(" · ") : "Nenhuma IA respondeu"));
-  } catch(e) {
-    setStep("step3","warn","Erro IA: " + e.message);
-  }
-
-  // STEP 4: Fallback ML search usando nome e termos gerados pela IA
-  setStep("step4","running","Buscando no ML pelos termos identificados...");
-  try {
-    if (mlResults.length === 0) {
-      var terms = bestTerms(aiResults);
-      var nome  = bestName(aiResults, pn);
-      // Tenta cada termo de busca gerado pela IA
-      for (var i = 0; i < terms.length && mlResults.length === 0; i++) {
-        mlResults = await searchML(terms[i]);
-      }
-      // Tenta nome da peça
-      if (mlResults.length === 0 && nome && nome !== pnUpper) {
-        mlResults = await searchML(nome);
-      }
-      // Tenta só as primeiras palavras do título gerado (mais genérico)
-      if (mlResults.length === 0) {
-        var titulo = (aiResults.groq && aiResults.groq.titulo_anuncio) || "";
-        var primeiras = titulo.split(" ").slice(0, 5).join(" ");
-        if (primeiras.length > 5) mlResults = await searchML(primeiras);
+    if (mlResults.length === 0 && analysisData.termos_busca_ml) {
+      for (var i = 0; i < analysisData.termos_busca_ml.length; i++) {
+        var r = await searchML(analysisData.termos_busca_ml[i]);
+        if (r.length > 0) { mlResults = r; break; }
       }
     }
-    setStep("step4", mlResults.length>0?"done":"warn",
-      mlResults.length>0 ? "Pronto — " + mlResults.length + " anúncio(s) para exibir" : "Nenhum anúncio ML para este PN");
+    if (mlResults.length === 0 && analysisData.nome_peca && analysisData.nome_peca !== pn) {
+      var r2 = await searchML(analysisData.nome_peca);
+      if (r2.length > 0) mlResults = r2;
+    }
+    if (mlResults.length > 0) {
+      setStep("step3", "done", mlResults.length + " anúncio(s) prontos");
+    } else {
+      var mlTavily = await searchTavily(pn + " " + (analysisData.nome_peca||"") + " mercado livre", 8);
+      setStep("step3", "warn", "Exibindo resultados da web");
+      renderResults(analysisData, [], mlTavily.results||[]);
+      document.getElementById("btnSearch").disabled = false;
+      return;
+    }
   } catch(e) {
-    setStep("step4","error","Erro: " + e.message);
+    setStep("step3", "error", "Erro: " + e.message);
   }
 
-  renderResults(pn, aiResults, mlResults, tavilyData);
+  renderResults(analysisData, mlResults, []);
   document.getElementById("btnSearch").disabled = false;
 }
 
-function buildContext(pn, mlResults, tavilyData) {
-  var ctx = "";
-
-  // Códigos de modelo Honda confirmados (formato: NNNNN-MMM-XXXX)
-  var HONDA_CODES = {
-    "K2K": "CB 300F Twister 2023 2024 2025",
-    "K3H": "XRE 300 Adventure Sahara 2023 2024 2025",
-    "K3G": "XRE 300 Adventure 2020 2021 2022",
-    "GJF": "CG 160 Fan 2016 2017 2018 2019 2020 2021 2022",
-    "KWN": "NXR 160 Bros 2015 2016 2017 2018 2019 2020 2021",
-    "KYJ": "PCX 150 2019 2020 2021 2022",
-    "K0G": "CB 500F 2019 2020 2021 2022 2023",
-    "K33": "CB 300R 2018 2019 2020 2021",
-    "K53": "CB 300R 2022 2023 2024",
-    "JC6": "CB 600F Hornet 2008 2009 2010 2011 2012",
-    "KVB": "Biz 125 2018 2019 2020 2021 2022",
-    "ZWH": "PCX 150 2016 2017 2018",
-    "KPH": "Pop 110i 2014 2015 2016 2017 2018",
-    "KZL": "CG 160 Titan 2018 2019 2020 2021",
-    "LDF": "CG 160 Titan 2022 2023 2024",
-    "K1M": "Titan 150 ESD 2009 2010 2011 2012 2013"
-  };
-
-  var mCode = pn.toUpperCase().match(/^\d{5}([A-Z]\d[A-Z])/);
-  if (mCode) {
-    var codeInfo = HONDA_CODES[mCode[1]];
-    ctx += "CÓDIGO DE MODELO HONDA: \"" + mCode[1] + "\" = " +
-      (codeInfo ? codeInfo : "consultar resultados web abaixo") + ".\n" +
-      (codeInfo
-        ? "Use este modelo confirmado no título e na compatibilidade.\n\n"
-        : "NÃO invente modelo — use apenas os resultados da web para confirmar.\n\n");
-  }
-
-  if (mlResults.length > 0) {
-    ctx += "Títulos reais do Mercado Livre:\n";
-    mlResults.slice(0,8).forEach(function(r,i){ ctx += (i+1)+". "+r.title+" — R$"+r.price+"\n"; });
-    ctx += "\n";
-  }
-  if (tavilyData) {
-    if (tavilyData.answer) ctx += "Resumo web: " + tavilyData.answer + "\n\n";
-    (tavilyData.results||[]).slice(0,6).forEach(function(r){ ctx += r.title+"\n"+(r.content||"").substring(0,400)+"\n\n"; });
-  }
-  return ctx || "Sem contexto disponível.";
-}
-
-// ─── Render ───────────────────────────────────────────────────────────────
-
-function renderResults(pn, aiResults, mlAds, tavilyData) {
-  var titleResult = mergeTitles(aiResults);
-  var titulo = titleResult.title || pn;
+function renderResults(analysis, mlAds, webAds) {
+  var titulo = analysis.titulo_anuncio || "";
   document.getElementById("tituloBox").textContent = titulo;
-  var chars = titulo.length;
-  var cc = document.getElementById("charCount");
-  cc.textContent = chars + " caracteres" + (chars < 60 ? " ⚠ (mínimo recomendado: 60)" : chars > 120 ? " ⚠ (máximo: 120)" : " ✓");
-  cc.className = "char-count " + (chars >= 60 && chars <= 120 ? "ok" : "warn");
-  document.getElementById("titleSourceLabel").textContent = "via " + titleResult.source.toUpperCase();
+  document.getElementById("charCount").textContent = titulo.length + " caracteres";
+  var conf = analysis.confianca;
+  document.getElementById("badgeTitulo").textContent = conf === "alta" ? "✓ Alta confiança" : conf === "media" ? "~ Média confiança" : "⚠ Baixa confiança";
+  document.getElementById("badgeTitulo").className = "card-badge " + (conf === "alta" ? "green" : conf === "media" ? "yellow" : "");
 
-  var conf = bestConfianca(aiResults);
-  document.getElementById("badgeTitulo").textContent = conf==="alta"?"✓ Alta confiança":conf==="media"?"~ Média confiança":"⚠ Baixa confiança";
-  document.getElementById("badgeTitulo").className = "card-badge "+(conf==="alta"?"green":conf==="media"?"yellow":"");
+  var dims = analysis.dimensoes || {};
+  document.getElementById("dimsRow").innerHTML = [
+    {label:"Comprimento",value:(dims.comprimento_cm||"—")+" cm"},
+    {label:"Largura",value:(dims.largura_cm||"—")+" cm"},
+    {label:"Altura",value:(dims.altura_cm||"—")+" cm"},
+    {label:"Peso",value:(dims.peso_kg||"—")+" kg"}
+  ].map(function(d){ return "<div class='dim-chip'><div class='dim-label'>"+d.label+"</div><div class='dim-value'>"+d.value+"</div></div>"; }).join("");
 
-  // Source consensus row for title
-  var srcHtml = "";
-  var srcDefs = [
-    {k:"groq",  label:"Groq / Llama"},
-    {k:"gemini",label:"Groq Alt"},
-    {k:"google",label:"Google / Tavily"}
-  ];
-  srcDefs.forEach(function(s){
-    var active = s.k==="google" ? (tavilyData&&(tavilyData.results||[]).length>0) : !!aiResults[s.k];
-    srcHtml += "<span class='src-badge "+(active?s.k:"off")+"'>"+(active?"✓":"✗")+" "+s.label+"</span>";
-  });
-  document.getElementById("titleSources").innerHTML = srcHtml;
-
-  // Dimensions
-  var dimPeca = mergeDims(aiResults, "dimensoes_peca");
-  var dimEmb  = mergeDims(aiResults, "dimensoes_embalagem");
-  function dimsHTML(d, hl) {
-    return [
-      {label:"Comprimento", value:(d.comprimento_cm||"—")+" cm"},
-      {label:"Largura",     value:(d.largura_cm||"—")+" cm"},
-      {label:"Altura",      value:(d.altura_cm||"—")+" cm"},
-      {label:"Peso",        value:(d.peso_kg||"—")+" kg"}
-    ].map(function(x){
-      return "<div class='dim-chip"+(hl?" highlight":"")+"'><div class='dim-label'>"+x.label+"</div><div class='dim-value'>"+x.value+"</div></div>";
-    }).join("");
-  }
-  document.getElementById("dimsEmbalagem").innerHTML = dimsHTML(dimEmb, true);
-  document.getElementById("dimsPeca").innerHTML      = dimsHTML(dimPeca, false);
-
-  // Compatibility
-  var mlTitles = mlAds.map(function(a){ return a.title||""; });
-  var compat = mergeCompat(aiResults, mlTitles);
-  document.getElementById("badgeCompat").textContent = compat.length + " modelo(s)";
-  if (compat.length > 0) {
-    document.getElementById("compatBody").innerHTML = compat.map(function(c){
-      var anos = Object.keys(c.anos).sort();
-      var yearsHtml = anos.map(function(a){
-        return "<span class='year-pill"+(anos.length<=5?" highlight":"")+"'>"+a+"</span>";
-      }).join("");
-      var srcsHtml = c.sources.map(function(s){
-        return "<span class='compat-src "+s+"'>"+s+"</span>";
-      }).join("");
-      return "<tr><td style='font-weight:500'>"+c.veiculo+"</td>"+
-        "<td><div class='years-wrap'>"+yearsHtml+"</div></td>"+
-        "<td><div class='compat-sources'>"+srcsHtml+"</div></td></tr>";
-    }).join("");
-  } else {
-    document.getElementById("compatBody").innerHTML = "<tr><td colspan='3' class='no-results'>Nenhuma compatibilidade identificada</td></tr>";
-  }
-
-  // Part numbers
-  var pns = mergePNs(aiResults, pn.toUpperCase());
+  var pns = analysis.part_numbers_compativeis || [];
   document.getElementById("badgePNs").textContent = pns.length + " código(s)";
   document.getElementById("pnGrid").innerHTML = pns.map(function(p){
-    return "<span class='pn-tag "+(p.tipo||"")+"' title='"+(p.marca||"")+"'>"+p.codigo+" <span style='opacity:0.5;font-size:9px'>"+(p.marca||"")+"</span></span>";
+    return "<span class='pn-tag "+(p.tipo||")+"' title='"+p.marca+"'>"+p.codigo+" <span style='opacity:0.5;font-size:9px'>"+p.marca+"</span></span>";
   }).join("") || "<span style='color:#444;font-size:12px'>Nenhum encontrado</span>";
 
-  // Ads
   var tbody = document.getElementById("adsBody");
   if (mlAds.length > 0) {
     document.getElementById("badgeAds").textContent = mlAds.length + " anúncio(s)";
     document.getElementById("badgeAds").className = "card-badge green";
     tbody.innerHTML = mlAds.map(function(a,i){
-      var cond  = a.condition==="new"?"novo":"usado";
+      var cond = a.condition==="new"?"novo":"usado";
       var preco = Number(a.price).toLocaleString("pt-BR",{minimumFractionDigits:2});
-      var tit   = a.title||"—";
-      var sel   = a.seller&&a.seller.nickname?a.seller.nickname:"—";
+      var titulo = a.title||"—";
+      var seller = a.seller&&a.seller.nickname?a.seller.nickname:"—";
       return "<tr><td style='color:#444;font-size:10px;font-family:monospace'>"+String(i+1).padStart(2,"0")+"</td>"+
-        "<td><div class='ad-title' title='"+tit.replace(/'/g,"&apos;")+"'>"+tit+"</div></td>"+
+        "<td><div class='ad-title' title='"+titulo.replace(/'/g,"")+"'>"+titulo+"</div></td>"+
         "<td class='price'>R$ "+preco+"</td>"+
         "<td><span class='badge "+cond+"'>"+cond+"</span></td>"+
-        "<td style='font-size:10px;color:#555;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>"+sel+"</td>"+
+        "<td style='font-size:10px;color:#555;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>"+seller+"</td>"+
         "<td><a class='ad-link' href='"+(a.permalink||"#")+"' target='_blank'>Ver ↗</a></td></tr>";
     }).join("");
     var prices = mlAds.map(function(a){return Number(a.price);}).filter(function(p){return p>0;});
     if (prices.length > 0) {
-      var mn=Math.min.apply(null,prices), mx=Math.max.apply(null,prices), avg=prices.reduce(function(a,b){return a+b;},0)/prices.length;
+      var min=Math.min.apply(null,prices), max=Math.max.apply(null,prices), avg=prices.reduce(function(a,b){return a+b;},0)/prices.length;
       document.getElementById("priceSummary").innerHTML =
         "<div class='price-summary'>"+
-        "<div class='price-chip'><div class='price-chip-label'>Menor preço</div><div class='price-chip-value'>R$ "+mn.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
+        "<div class='price-chip'><div class='price-chip-label'>Menor preço</div><div class='price-chip-value'>R$ "+min.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
         "<div class='price-chip'><div class='price-chip-label'>Preço médio</div><div class='price-chip-value'>R$ "+avg.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
-        "<div class='price-chip'><div class='price-chip-label'>Maior preço</div><div class='price-chip-value'>R$ "+mx.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
+        "<div class='price-chip'><div class='price-chip-label'>Maior preço</div><div class='price-chip-value'>R$ "+max.toLocaleString("pt-BR",{minimumFractionDigits:2})+"</div></div>"+
         "<div class='price-chip'><div class='price-chip-label'>Anúncios</div><div class='price-chip-value'>"+mlAds.length+"</div></div>"+
         "</div>";
     }
-  } else if (tavilyData && (tavilyData.results||[]).length > 0) {
-    document.getElementById("badgeAds").textContent = tavilyData.results.length + " resultado(s) web";
+  } else if (webAds.length > 0) {
+    document.getElementById("badgeAds").textContent = webAds.length + " resultado(s) web";
     document.getElementById("badgeAds").className = "card-badge blue";
-    tbody.innerHTML = tavilyData.results.map(function(a,i){
+    tbody.innerHTML = webAds.map(function(a,i){
       return "<tr><td style='color:#444;font-size:10px;font-family:monospace'>"+String(i+1).padStart(2,"0")+"</td>"+
-        "<td colspan='3'><div class='ad-title' style='max-width:400px'>"+(a.title||"—")+"</div>"+
+        "<td colspan='3'><div class='ad-title' style='max-width:400px'>"+( a.title||"—")+"</div>"+
         "<div style='font-size:10px;color:#444;margin-top:2px'>"+(a.content||"").substring(0,100)+"...</div></td>"+
         "<td colspan='2'><a class='ad-link' href='"+(a.url||"#")+"' target='_blank'>Ver ↗</a></td></tr>";
     }).join("");
@@ -848,6 +511,7 @@ function copyTitulo() {
 
 document.getElementById("inputPN").addEventListener("keydown", function(e){ if(e.key==="Enter") runSearch(); });
 
+// Init
 handleOAuthCallback();
 updateAuthBar();
 </script>
