@@ -1,5 +1,8 @@
 {
   "rewrites": [
-    { "source": "/callback", "destination": "/callback.html" }
+    { "source": "/api/groq", "destination": "/api/groq" },
+    { "source": "/api/tavily", "destination": "/api/tavily" },
+    { "source": "/api/ml-token", "destination": "/api/ml-token" },
+    { "source": "/api/ml-search", "destination": "/api/ml-search" }
   ]
 }
