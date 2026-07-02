@@ -121,8 +121,21 @@
     </div>
   </div>
   <div class="card">
+    <div class="card-header"><span class="card-icon">🏷️</span><span class="card-title">Categoria e Ficha Técnica</span><span class="card-badge" id="badgeCategoria">—</span></div>
+    <div class="card-body">
+      <div class="dims-row" id="fichaRow"></div>
+    </div>
+  </div>
+  <div class="card">
     <div class="card-header"><span class="card-icon">📦</span><span class="card-title">Dimensões Estimadas para Frete</span><span class="card-badge" id="badgeDims">Mercado Envios</span></div>
     <div class="card-body"><div class="dims-row" id="dimsRow"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-icon">💰</span><span class="card-title">Preço Sugerido (Desmonte)</span><span class="card-badge" id="badgePreco">—</span></div>
+    <div class="card-body">
+      <div class="dims-row" id="precoRow"></div>
+      <div style="font-size:11px;color:#555;margin-top:10px;font-style:italic" id="fontePreco"></div>
+    </div>
   </div>
   <div class="card">
     <div class="card-header"><span class="card-icon">🔗</span><span class="card-title">Part Numbers Compatíveis</span><span class="card-badge" id="badgePNs">—</span></div>
@@ -383,18 +396,29 @@ async function runSearch() {
       (tavilyData.results||[]).slice(0,4).forEach(function(r,i){ ctx += r.title+"\n"+(r.content||"").substring(0,200)+"\n\n"; });
     }
 
-    var sys = "Você é especialista em peças de moto e SEO para Mercado Livre Brasil. " +
-      "Gere títulos entre 60-120 chars: [Nome Peça] [Marca Moto] [Modelos] [Anos] Original. " +
-      "Anos separados por espaço. Sem barras, pipes ou part number no título. " +
+    var sys = "Você é um Especialista em Marketplaces e Analista de Dados, focado em peças de moto usadas " +
+      "originadas de desmanche/desmonte legalizado, para anúncios no Mercado Livre Brasil. " +
+      "Regras do título: máximo 60 caracteres; NUNCA use as palavras usado, seminovo ou desmonte; " +
+      "estrutura [Nome da Peça] [Marca Original/Genérica] [Modelo(s) da Moto] [Especificação-chave]; " +
+      "se servir para mais de um modelo use 'para' ou 'compatível com'; sem barras, pipes ou part number no título. " +
+      "Categoria: informe a rota completa de navegação, ex. 'Mercado Livre > Veículos > Peças de Moto e Quadriciclos > [Subcategoria]'. " +
+      "Preço: se o contexto trouxer preços reais de anúncios usados semelhantes, calcule a média deles e aplique um desconto de 20% a 30% " +
+      "sobre essa média (peça vem de desmonte, para garantir giro rápido); se não houver preços no contexto, estime com base em peças " +
+      "equivalentes usadas no mercado brasileiro e aplique o mesmo desconto. Descreva a metodologia usada em fonte_preco. " +
       "Responda SOMENTE com JSON válido, sem markdown.";
 
     var usr = ["Part Number: " + pn, "", "Contexto:", ctx || "Sem contexto disponível.", "",
       "Retorne JSON:", '{',
       '"nome_peca":"nome completo da peça",',
-      '"titulo_anuncio":"título otimizado 60-120 chars sem part number",',
+      '"titulo_anuncio":"título otimizado, máximo 60 caracteres, sem part number e sem usado/seminovo/desmonte",',
+      '"categoria_mercadolivre":"rota completa de categoria no Mercado Livre",',
+      '"marca":"marca original ou genérica da peça",',
+      '"modelo":"modelo(s) de moto compatível(is)",',
       '"dimensoes":{"comprimento_cm":0,"largura_cm":0,"altura_cm":0,"peso_kg":0},',
       '"part_numbers_compativeis":[{"codigo":"string","tipo":"original","marca":"string"}],',
       '"termos_busca_ml":["termo1","termo2","termo3"],',
+      '"preco_medio_sugerido":0,',
+      '"fonte_preco":"resumo da pesquisa de preço e desconto aplicado",',
       '"confianca":"alta ou media ou baixa"',
       '}'].join("\n");
 
@@ -402,7 +426,7 @@ async function runSearch() {
     setStep("step2", "done", "Análise: " + (analysisData.nome_peca||pn) + " (" + (analysisData.confianca||"?") + " confiança)");
   } catch(e) {
     setStep("step2", "warn", "Análise parcial: " + e.message);
-    analysisData = { nome_peca: pn, titulo_anuncio: pn, dimensoes: {comprimento_cm:20,largura_cm:15,altura_cm:10,peso_kg:0.5}, part_numbers_compativeis:[{codigo:pn,tipo:"original",marca:"—"}], termos_busca_ml:[pn], confianca:"baixa" };
+    analysisData = { nome_peca: pn, titulo_anuncio: pn, categoria_mercadolivre:"—", marca:"—", modelo:"—", dimensoes: {comprimento_cm:20,largura_cm:15,altura_cm:10,peso_kg:0.5}, part_numbers_compativeis:[{codigo:pn,tipo:"original",marca:"—"}], termos_busca_ml:[pn], preco_medio_sugerido:0, fonte_preco:"Não foi possível estimar preço.", confianca:"baixa" };
   }
 
   // STEP 3: fallback search if ML was empty
@@ -443,6 +467,13 @@ function renderResults(analysis, mlAds, webAds) {
   document.getElementById("badgeTitulo").textContent = conf === "alta" ? "✓ Alta confiança" : conf === "media" ? "~ Média confiança" : "⚠ Baixa confiança";
   document.getElementById("badgeTitulo").className = "card-badge " + (conf === "alta" ? "green" : conf === "media" ? "yellow" : "");
 
+  document.getElementById("badgeCategoria").textContent = analysis.marca || "—";
+  document.getElementById("fichaRow").innerHTML = [
+    {label:"Categoria",value:analysis.categoria_mercadolivre||"—"},
+    {label:"Marca",value:analysis.marca||"—"},
+    {label:"Modelo",value:analysis.modelo||"—"}
+  ].map(function(d){ return "<div class='dim-chip' style='min-width:140px'><div class='dim-label'>"+d.label+"</div><div class='dim-value' style='font-size:11px'>"+d.value+"</div></div>"; }).join("");
+
   var dims = analysis.dimensoes || {};
   document.getElementById("dimsRow").innerHTML = [
     {label:"Comprimento",value:(dims.comprimento_cm||"—")+" cm"},
@@ -451,10 +482,18 @@ function renderResults(analysis, mlAds, webAds) {
     {label:"Peso",value:(dims.peso_kg||"—")+" kg"}
   ].map(function(d){ return "<div class='dim-chip'><div class='dim-label'>"+d.label+"</div><div class='dim-value'>"+d.value+"</div></div>"; }).join("");
 
+  var precoSugerido = Number(analysis.preco_medio_sugerido||0);
+  document.getElementById("badgePreco").textContent = precoSugerido > 0 ? "Sugerido pela IA" : "—";
+  document.getElementById("precoRow").innerHTML =
+    "<div class='dim-chip'><div class='dim-label'>Preço sugerido</div><div class='dim-value'>" +
+    (precoSugerido > 0 ? "R$ " + precoSugerido.toLocaleString("pt-BR",{minimumFractionDigits:2}) : "—") +
+    "</div></div>";
+  document.getElementById("fontePreco").textContent = analysis.fonte_preco || "";
+
   var pns = analysis.part_numbers_compativeis || [];
   document.getElementById("badgePNs").textContent = pns.length + " código(s)";
   document.getElementById("pnGrid").innerHTML = pns.map(function(p){
-    return "<span class='pn-tag "+(p.tipo||")+"' title='"+p.marca+"'>"+p.codigo+" <span style='opacity:0.5;font-size:9px'>"+p.marca+"</span></span>";
+    return "<span class='pn-tag "+(p.tipo||"")+"' title='"+p.marca+"'>"+p.codigo+" <span style='opacity:0.5;font-size:9px'>"+p.marca+"</span></span>";
   }).join("") || "<span style='color:#444;font-size:12px'>Nenhum encontrado</span>";
 
   var tbody = document.getElementById("adsBody");
